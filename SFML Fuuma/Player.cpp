@@ -20,7 +20,7 @@ void Player::initSprite()
 
 Player::Player()
 {
-	this->movementSpeed = 1.0f;
+	this->movementSpeed = 2.0f;
 	this->initTexture();
 	this->initSprite();
 	
@@ -33,6 +33,8 @@ Player::~Player()
 
 void Player::move(const float dirX, const float dirY)
 {
+	/*if (sf::Keyboard::isKeyPressed(sf::Keyboard::K))
+		this->movementSpeed += 0.01f;*/
 	this->sprite.move(this->movementSpeed * dirX, this->movementSpeed * dirY);
 }
 
