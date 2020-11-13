@@ -1,11 +1,10 @@
-#include <SFML/Graphics.hpp>
-#include <iostream>
 #include "Game.h"
-#include<time.h>
+#include <time.h>
 
 int main()
 {
-	srand(time(static_cast<unsigned>(0)));
+	//srand(time(static_cast <unsigned> (0)));
+	srand(time(0));
 
 	Game game;
 
