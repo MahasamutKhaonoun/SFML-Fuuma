@@ -16,7 +16,11 @@ void Game::initPlayer()
 {
 	this->player = new Player();
 
-	this->enemy = new Enemy(20.0f, 20.0f);
+}
+void Game::initEnemies()
+{
+	this->spawnTimerMax = 50.0f;
+	this->spawnTimer = this->spawnTimerMax;
 }
 //Con Des
 Game::Game()
@@ -25,6 +29,7 @@ Game::Game()
 	this->initWindow();
 	this->initTextures();
 	this->initPlayer();
+	this->initEnemies();
 }
 
 Game::~Game()
@@ -41,6 +46,12 @@ Game::~Game()
 
 	//Delete bullets
 	for (auto* i : this->bullets)
+	{
+		delete i;
+	}
+
+	//delete enemies
+	for (auto* i : this->enemies)
 	{
 		delete i;
 	}
@@ -88,7 +99,15 @@ void Game::updateInput()
 
 	if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && this->player->canAttack())
 	{
-		this->bullets.push_back(new Bullet(this->textures["BULLET"], this->player->getPos().x, this->player->getPos().y, 1.f, 0.f, 5.f)); //texture, pos_x, pos_y, dir_x, dir_y, movement_speed
+			this->bullets.push_back(
+			new Bullet(
+			this->textures["BULLET"], 
+			this->player->getPos().x + this->player->getBounds().width/2.f, 
+			this->player->getPos().y, 
+			1.f, 
+			0.f, 
+			5.f)
+			); //texture, pos_x, pos_y, dir_x, dir_y, movement_speed
 	}
 }
 
@@ -114,6 +133,29 @@ void Game::updateBullets()
 	}
 }
 
+void Game::updateEnemies()
+{
+	this->spawnTimer += 0.5f;
+	if (this->spawnTimer >= this->spawnTimerMax)
+	{
+		this->enemies.push_back(new Enemy(this->window->getSize().x + 20.f, rand() % this->window->getSize().y - 20.f));
+		this->spawnTimer = 0.0f;
+	}
+
+	for (int i = 0; i < this->enemies.size(); ++i)
+	{
+		this->enemies[i]->update();
+
+		//Remove enemy at the bottom of the screen
+		if (this->enemies[i]->getBounds().top > this->window->getSize().x)
+		{
+			this->enemies.erase(this->enemies.begin() + i);
+			std::cout << this->enemies.size() << "\n";
+		}
+		
+	}
+}
+
 void Game::update()
 {
 	this->updatePollEvents();
@@ -123,6 +165,8 @@ void Game::update()
 	this->player->update();
 
 	this->updateBullets();
+
+	this->updateEnemies();
 	
 }
 
@@ -138,7 +182,11 @@ void Game::render()
 		bullet->render(this->window);
 	}
 
-	this->enemy->render(this->window);
+	for (auto* enemy : this->enemies)
+	{
+		enemy->render(this->window);
+	}
+
 	this->window->display();
 
 }
