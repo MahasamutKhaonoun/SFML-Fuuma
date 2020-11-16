@@ -138,6 +138,19 @@ void Game::updateGUI()
 
 }
 
+void Game::updateWorld()
+{
+}
+
+void Game::updateCollision()
+{
+	//Left World Collision
+	if (this->player->getBounds().left < 0.f)
+	{
+		this->player->setPosition(0.0f, this->player->getBounds().top);
+	}
+}
+
 void Game::updateBullets()
 {
 	unsigned counter = 0;
@@ -222,6 +235,8 @@ void Game::update()
 
 	this->player->update();
 
+	this->updateCollision();
+
 	this->updateBullets();
 
 	this->updateEnemies();
@@ -229,6 +244,8 @@ void Game::update()
 	this->updateCombat();
 	
 	this->renderGUI();
+
+	this->updateWorld();
 }
 
 void Game::renderGUI()

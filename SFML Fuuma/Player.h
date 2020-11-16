@@ -26,6 +26,12 @@ public:
 	const sf::Vector2f& getPos() const;
 	const sf::FloatRect getBounds() const;
 	
+	//Modifers
+	void setPosition(const sf::Vector2f pos);
+	void setPosition(const float x, const float y);
+
+
+
 	//Function
 	void move(const float dirX, const float dirY);
 	const bool canAttack();
