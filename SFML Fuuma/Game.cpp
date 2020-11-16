@@ -12,6 +12,26 @@ void Game::initTextures()
 	this->textures["BULLET"] = new sf::Texture();
 	this->textures["BULLET"] -> loadFromFile("Player/Vic Bullet.png");
 }
+void Game::initGUI()
+{
+	//Load font
+	if(!this->font.loadFromFile("Fonts/G7Gradius21ByteFont-Jaem.ttf"))
+		std::cout << "ERROR::GAME ::Failed to load font" << "\n";
+		
+	//Init point text
+	this->pointText.setFont(this->font);
+	this->pointText.setCharacterSize(12);
+	this->pointText.setFillColor(sf::Color::Blue);
+	this->pointText.setString("SCORE : ");
+}
+void Game::initWorld()
+{
+	if (!this->worldBackgroundTex.loadFromFile(""))
+	{
+		std::cout << "ERROR::GAME::Could not load background texture" << "\n";
+	}
+	this->worldBackground.setTexture(this->worldBackgroundTex);
+}
 void Game::initPlayer()
 {
 	this->player = new Player();
@@ -28,6 +48,8 @@ Game::Game()
 
 	this->initWindow();
 	this->initTextures();
+	this->initGUI();
+	this->initWorld();
 	this->initPlayer();
 	this->initEnemies();
 }
@@ -111,6 +133,11 @@ void Game::updateInput()
 	}
 }
 
+void Game::updateGUI()
+{
+
+}
+
 void Game::updateBullets()
 {
 	unsigned counter = 0;
@@ -119,22 +146,22 @@ void Game::updateBullets()
 		bullet->update();
 	
 		//Bullet culling (top of screen)
-		if (bullet->getBound().top + bullet->getBound().height < 0.0f)
+		if (bullet->getBounds().top + bullet->getBounds().height < 0.0f)
 		{
 			//Delete bullet
 			delete this->bullets.at(counter);
 			this->bullets.erase(this->bullets.begin() + counter);
 			--counter;
 
-			std::cout << this->bullets.size() << "\n";
 		}
 
 		++counter;
 	}
 }
 
-void Game::updateEnemiesAndCombat()
+void Game::updateEnemies()
 {
+	//Spawning
 	this->spawnTimer += 0.5f;
 	if (this->spawnTimer >= this->spawnTimerMax)
 	{
@@ -142,32 +169,48 @@ void Game::updateEnemiesAndCombat()
 		this->spawnTimer = 0.0f;
 	}
 
+	//Update
+	unsigned counter = 0;
+	for (auto* enemy : this->enemies)
+	{
+		enemy->update();
+
+		//Bullet culling (top of screen)
+		if (enemy->getBounds().top > this->window->getSize().y) //enemy->getBounds().left < 0.0f will delete when collision with window
+		{
+			//Delete bullet
+			delete this->enemies.at(counter);
+			this->enemies.erase(this->enemies.begin() + counter);
+			--counter;
+
+		}
+
+		++counter;
+	}
+
+	
+	
+}
+
+void Game::updateCombat()
+{
 	for (int i = 0; i < this->enemies.size(); ++i)
 	{
-		bool enemy_removed = false;
-		this->enemies[i]->update();
-
-		for (size_t k = 0; k < this->bullets.size() && !enemy_removed; k++)
+		bool enemy_deleted = false;
+		for (size_t k = 0; k < this->bullets.size() && enemy_deleted == false; k++)
 		{
-			if (this->bullets[k]->getBound().intersects(this->enemies[i]->getBounds()))
+			if (this->enemies[i]->getBounds().intersects(this->bullets[k]->getBounds()))
 			{
+				delete this->enemies[i];
+				this->enemies.erase(this->enemies.begin() + i);
+
+				delete this->bullets[k];
 				this->bullets.erase(this->bullets.begin() + k);
-				this->enemies.erase(this->enemies.begin() + i);
-				enemy_removed = true;
+
+				enemy_deleted = true;
 			}
 		}
 
-		//Remove enemy at the bottom of the screen
-		if (!enemy_removed)
-		{
-			if (this->enemies[i]->getBounds().top > this->window->getSize().y)
-			{
-				this->enemies.erase(this->enemies.begin() + i);
-				std::cout << this->enemies.size() << "\n";
-				enemy_removed = true;
-			}
-		}
-		
 	}
 }
 
@@ -181,13 +224,30 @@ void Game::update()
 
 	this->updateBullets();
 
-	this->updateEnemiesAndCombat();
+	this->updateEnemies();
+
+	this->updateCombat();
 	
+	this->renderGUI();
+}
+
+void Game::renderGUI()
+{
+	this->window->draw(this->pointText);
+}
+
+void Game::renderWorld()
+{
+	this->window->draw(this->worldBackground);
 }
 
 void Game::render()
 {
 	this->window->clear();
+
+	//Draw world
+	this->renderWorld();
+
 
 	//Draw all the stuffs
 	this->player->render(*this->window);
@@ -201,6 +261,8 @@ void Game::render()
 	{
 		enemy->render(this->window);
 	}
+
+	this->renderGUI();
 
 	this->window->display();
 

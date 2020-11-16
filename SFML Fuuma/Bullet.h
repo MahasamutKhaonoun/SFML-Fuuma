@@ -22,7 +22,7 @@ public:
 	virtual ~Bullet();
 
 	//Accessor
-	const sf::FloatRect getBound() const;
+	const sf::FloatRect getBounds() const;
 
 	void update();
 	void render(sf::RenderTarget* target);

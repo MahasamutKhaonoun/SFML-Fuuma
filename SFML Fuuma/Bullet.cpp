@@ -23,7 +23,7 @@ Bullet::~Bullet()
 
 
 
-const sf::FloatRect Bullet::getBound() const
+const sf::FloatRect Bullet::getBounds() const
 {
 	return this->shape.getGlobalBounds();
 }
