@@ -222,7 +222,12 @@ void Game::updateEnemies()
 			delete this->enemies.at(counter);
 			this->enemies.erase(this->enemies.begin() + counter);
 			--counter;
-
+		}
+		else if (enemy->getBounds().intersects(this->player->getBounds()))
+		{
+			delete this->enemies.at(counter);
+			this->enemies.erase(this->enemies.begin() + counter);
+			--counter;
 		}
 
 		++counter;
@@ -241,11 +246,15 @@ void Game::updateCombat()
 		{
 			if (this->enemies[i]->getBounds().intersects(this->bullets[k]->getBounds()))
 			{
+				this->points += this->enemies[i]->getPoints();
+
 				delete this->enemies[i];
 				this->enemies.erase(this->enemies.begin() + i);
 
 				delete this->bullets[k];
 				this->bullets.erase(this->bullets.begin() + k);
+
+			
 
 				enemy_deleted = true;
 			}

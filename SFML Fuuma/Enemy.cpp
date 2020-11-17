@@ -5,7 +5,7 @@ void Enemy::initVariables()
 {
 	this->pointCount	= rand() % 8 + 3; //min = 3 max = 10
 	this->type			= 0;
-	this->speed			= static_cast<float>(this->pointCount);
+	this->speed			= static_cast<float>(this->pointCount/3);
 	this->hpMax			= static_cast<float>(this->pointCount);
 	this->hp			= this->hpMax;
 	this->damage		= this->pointCount;
@@ -22,7 +22,7 @@ void Enemy::initVariables()
 
 void Enemy::initShape()
 {
-	this->shape.setRadius(this->pointCount); //rand() % 20 + 20
+	this->shape.setRadius(this->pointCount * 5); //rand() % 20 + 20
 	this->shape.setPointCount(this->pointCount); //rand() % 20 + 3
 	this->shape.setFillColor(sf::Color(rand() % 255 + 1, rand() % 255 + 1, rand() % 255 + 1, 255));
 	
@@ -47,6 +47,11 @@ Enemy::~Enemy()
 const sf::FloatRect Enemy::getBounds() const
 {
 	return this->shape.getGlobalBounds();
+}
+
+const int& Enemy::getPoints() const
+{
+	return this->points;
 }
 
 
