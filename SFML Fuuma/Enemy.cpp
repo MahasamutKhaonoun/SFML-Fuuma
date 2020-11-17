@@ -1,27 +1,39 @@
 #include "Enemy.h"
 
-void Enemy::initShape()
-{
-	this->shape.setRadius(rand() % 20 + 20);
-	this->shape.setPointCount(rand() % 20 + 3);
-	this->shape.setFillColor(sf::Color(rand() % 255 + 1, rand() % 255 + 1, rand() % 255 + 1, 255));
-
-}
 
 void Enemy::initVariables()
 {
-	this->type		= 0;
-	this->speed		= 5.f;
-	this->hpMax		= 10;
-	this->hp		= 0;
-	this->damage	= 1;
-	this->points	= 5;
+	this->pointCount	= rand() % 8 + 3; //min = 3 max = 10
+	this->type			= 0;
+	this->speed			= static_cast<float>(this->pointCount);
+	this->hpMax			= static_cast<float>(this->pointCount);
+	this->hp			= this->hpMax;
+	this->damage		= this->pointCount;
+	this->points		= this->pointCount;
+
+	//this->pointCount = rand() % 8 + 3; //min = 3 max = 10
+	//this->type = 0;
+	//this->speed = 5.f;
+	//this->hpMax = 10;
+	//this->hp = 0;
+	//this->damage = 1;
+	//this->points = 5;
+}
+
+void Enemy::initShape()
+{
+	this->shape.setRadius(this->pointCount); //rand() % 20 + 20
+	this->shape.setPointCount(this->pointCount); //rand() % 20 + 3
+	this->shape.setFillColor(sf::Color(rand() % 255 + 1, rand() % 255 + 1, rand() % 255 + 1, 255));
+	
+
 }
 
 Enemy::Enemy(float pos_x, float pos_y)
 {
-	this->initShape();
 	this->initVariables();
+	this->initShape();
+
 	this->shape.setPosition(pos_x, pos_y);
 
 }

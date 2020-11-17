@@ -22,7 +22,7 @@ void Game::initGUI()
 	this->pointText.setFont(this->font);
 	this->pointText.setCharacterSize(12);
 	this->pointText.setFillColor(sf::Color::Blue);
-	this->pointText.setString("SCORE : ");
+	//this->pointText.setString("SCORE : ");
 }
 void Game::initWorld()
 {
@@ -31,6 +31,10 @@ void Game::initWorld()
 		std::cout << "ERROR::GAME::Could not load background texture" << "\n";
 	}
 	this->worldBackground.setTexture(this->worldBackgroundTex);
+}
+void Game::initSystems()
+{
+	this->points = 0;
 }
 void Game::initPlayer()
 {
@@ -50,6 +54,7 @@ Game::Game()
 	this->initTextures();
 	this->initGUI();
 	this->initWorld();
+	this->initSystems();
 	this->initPlayer();
 	this->initEnemies();
 }
@@ -135,11 +140,15 @@ void Game::updateInput()
 
 void Game::updateGUI()
 {
+	std::stringstream ss;
+	ss << "SCORE : " << this->points;
+	this->pointText.setString(ss.str());
 
 }
 
 void Game::updateWorld()
 {
+
 }
 
 void Game::updateCollision()
@@ -148,6 +157,24 @@ void Game::updateCollision()
 	if (this->player->getBounds().left < 0.f)
 	{
 		this->player->setPosition(0.0f, this->player->getBounds().top);
+	}
+
+	//Right world collision
+	else if (this->player->getBounds().left + this->player->getBounds().width >= this->window->getSize().x)
+	{
+		this->player->setPosition(this->window->getSize().x - this->player->getBounds().width, this->player->getBounds().top);
+	}
+
+	//Top world collision
+	if (this->player->getBounds().top < 0.f)
+	{
+		this->player->setPosition(this->player->getBounds().left, 0.f);
+	}
+
+	//Bottom world collision
+	else if (this->player->getBounds().top + this->player->getBounds().height >= this->window->getSize().y)
+	{
+		this->player->setPosition(this->player->getBounds().left, this->window->getSize().y - this->player->getBounds().height);
 	}
 }
 
@@ -246,6 +273,8 @@ void Game::update()
 	this->renderGUI();
 
 	this->updateWorld();
+
+	this->updateGUI();
 }
 
 void Game::renderGUI()
