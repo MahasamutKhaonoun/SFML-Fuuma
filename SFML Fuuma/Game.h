@@ -25,14 +25,15 @@ private:
 	sf::Texture worldBackgroundTex;
 	sf::Sprite worldBackground;
 
-
 	//Systems
 	unsigned points;
 
-
-
 	//Player
 	Player* player;
+
+	//PlayerGUI
+	sf::RectangleShape playerHpBar;
+	sf::RectangleShape playerHpBarBack;
 
 	//Enemies
 	float spawnTimer;
