@@ -21,8 +21,8 @@ void Game::initGUI()
 	//Init point text
 	this->pointText.setFont(this->font);
 	this->pointText.setCharacterSize(12);
-	this->pointText.setFillColor(sf::Color::Blue);
-	//this->pointText.setString("SCORE : ");
+	this->pointText.setFillColor(sf::Color::White);
+	//this->pointText.setString("test");
 
 	//Init player GUI
 	this->playerHpBar.setSize(sf::Vector2f(300.0f, 25.0f));
@@ -153,7 +153,6 @@ void Game::updateGUI()
 	this->pointText.setString(ss.str());
 
 	//Update player GUI
-	this->player->setHp(5);
 	float hpPercent = static_cast<float>(this->player->getHp()) / this->player->getHpMax();
 	this->playerHpBar.setSize(sf::Vector2f(300.0f * hpPercent, this->playerHpBar.getSize().y));
 	
@@ -235,13 +234,13 @@ void Game::updateEnemies()
 			//Delete bullet
 			delete this->enemies.at(counter);
 			this->enemies.erase(this->enemies.begin() + counter);
-			--counter;
 		}
+		//Enemy player collision  
 		else if (enemy->getBounds().intersects(this->player->getBounds()))
 		{
+			this->player->loseHp(this->enemies.at(counter)->getDamage());
 			delete this->enemies.at(counter);
 			this->enemies.erase(this->enemies.begin() + counter);
-			--counter;
 		}
 
 		++counter;
