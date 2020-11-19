@@ -19,10 +19,19 @@ void Game::initGUI()
 		std::cout << "ERROR::GAME ::Failed to load font" << "\n";
 		
 	//Init point text
+	this->pointText.setPosition(1100.f, 25.f);
 	this->pointText.setFont(this->font);
 	this->pointText.setCharacterSize(12);
 	this->pointText.setFillColor(sf::Color::White);
 	//this->pointText.setString("test");
+
+	this->gameOverText.setFont(this->font);
+	this->gameOverText.setCharacterSize(60);
+	this->gameOverText.setFillColor(sf::Color::Red);
+	this->gameOverText .setString("GAME OVER!");
+	this->gameOverText.setPosition(
+		this->window->getSize().x / 2 - this->gameOverText.getGlobalBounds().width / 2.0f, 
+		this->window->getSize().y / 2 - this->gameOverText.getGlobalBounds().height /2.0f);
 
 	//Init player GUI
 	this->playerHpBar.setSize(sf::Vector2f(300.0f, 25.0f));
@@ -97,8 +106,12 @@ void Game::run()
 {
 	while (this->window->isOpen())
 	{
-		this->update();
-		this->render();
+		this->updatePollEvents();
+		if (this->player->getHp() > 0)
+		{
+			this->update();
+			this->render();
+		}
 
 	}
 	
@@ -204,7 +217,6 @@ void Game::updateBullets()
 			//Delete bullet
 			delete this->bullets.at(counter);
 			this->bullets.erase(this->bullets.begin() + counter);
-			--counter;
 
 		}
 
@@ -278,7 +290,6 @@ void Game::updateCombat()
 
 void Game::update()
 {
-	this->updatePollEvents();
 
 	this->updateInput();
 
@@ -297,6 +308,7 @@ void Game::update()
 	this->updateWorld();
 
 	this->updateGUI();
+
 }
 
 void Game::renderGUI()
@@ -334,6 +346,11 @@ void Game::render()
 
 	this->renderGUI();
 
+	//Game Over screen
+	if (this->player->getHp() <= 0)
+	{
+		this->window->draw(this->gameOverText);
+	}
 	this->window->display();
 
 }
