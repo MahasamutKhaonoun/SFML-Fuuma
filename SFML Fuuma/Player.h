@@ -8,6 +8,11 @@ class Player
 private:
 	sf::Sprite sprite;
 	sf::Texture texture;
+	sf::Texture texture_R1;
+	sf::Texture texture_R2;
+	sf::Texture texture_L1;
+	sf::Texture texture_L2;
+
 
 	float movementSpeed;
 
@@ -43,6 +48,13 @@ public:
 	//Function
 	void move(const float dirX, const float dirY);
 	const bool canAttack();
+
+	void setVic();
+	void setVic_R1();
+	void setVic_R2();
+	void setVic_L1();
+	void setVic_L2();
+
 
 	void updateAttack();
 	void update();

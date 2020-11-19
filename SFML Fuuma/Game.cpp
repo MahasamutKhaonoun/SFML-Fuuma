@@ -136,14 +136,21 @@ void Game::updatePollEvents()
 void Game::updateInput()
 {
 	//Move player
+	this->player->setVic();
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::A))
 		this->player->move(-1.0f, 0.0f);
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::D))
 		this->player->move(1.0f, 0.0f);
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::W))
+	{
 		this->player->move(0.0f, -1.0f);
+		this->player->setVic_L1();
+	}
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::S))
+	{
 		this->player->move(0.0f, 1.0f);
+		this->player->setVic_R1();
+	}
 
 	if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && this->player->canAttack())
 	{
