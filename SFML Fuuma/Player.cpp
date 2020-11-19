@@ -7,6 +7,7 @@ void Player::initVariables()
 	this->attackCooldown = this->attackCooldownMax;
 	this->hpMax = 100;
 	this->hp = this->hpMax;
+	this->sprite.setPosition(100.f, 360.f);
 }
 
 void Player::initTexture()
@@ -50,7 +51,7 @@ void Player::initSprite()
 
 	//Resize the sprite
 	this->sprite.scale(5.0f, 4.0f);
-	//this->sprite.setOrigin(sf::Vector2f(100.f, 100.f));
+	
 }
 
 Player::Player()
@@ -112,9 +113,12 @@ void Player::loseHp(const int value)
 
 void Player::move(const float dirX, const float dirY)
 {
-	/*if (sf::Keyboard::isKeyPressed(sf::Keyboard::K))
-		this->movementSpeed += 0.01f;*/
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::K))
+	{
+		this->movementSpeed = 3.f;
+	}
 	this->sprite.move(this->movementSpeed * dirX, this->movementSpeed * dirY);
+	this->movementSpeed = 2.0f;
 }
 
 const bool Player::canAttack()

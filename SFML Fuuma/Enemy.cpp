@@ -11,6 +11,7 @@ void Enemy::initVariables()
 	this->damage		= this->pointCount;
 	this->points		= this->pointCount;
 
+
 	//this->pointCount = rand() % 8 + 3; //min = 3 max = 10
 	//this->type = 0;
 	//this->speed = 5.f;
@@ -20,8 +21,18 @@ void Enemy::initVariables()
 	//this->points = 5;
 }
 
+void Enemy::initTexture()
+{
+	if (!this->texture.loadFromFile("Enemy/abc.png"))
+	{
+		std::cout << "Error::Could not load texture player file." << "\n";
+	}
+}
+
 void Enemy::initShape()
 {
+
+
 	this->shape.setRadius(this->pointCount * 5); //rand() % 20 + 20
 	this->shape.setPointCount(this->pointCount); //rand() % 20 + 3
 	this->shape.setFillColor(sf::Color(rand() % 255 + 1, rand() % 255 + 1, rand() % 255 + 1, 255));

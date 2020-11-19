@@ -35,11 +35,11 @@ void Game::initGUI()
 
 	//Init player GUI
 	this->playerHpBar.setSize(sf::Vector2f(300.0f, 25.0f));
-	this->playerHpBar.setFillColor(sf::Color::Red);
+	this->playerHpBar.setFillColor(sf::Color::Blue);
 	this->playerHpBar.setPosition(sf::Vector2f(20.0f, 20.0f));
 
 	this->playerHpBarBack = this->playerHpBar;
-	this->playerHpBarBack.setFillColor(sf::Color(25, 25, 25, 200));
+	this->playerHpBarBack.setFillColor(sf::Color::White);//(25, 25, 25, 200)
 }
 void Game::initWorld()
 {
@@ -142,15 +142,11 @@ void Game::updateInput()
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::D))
 		this->player->move(1.0f, 0.0f);
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::W))
-	{
 		this->player->move(0.0f, -1.0f);
 		this->player->setVic_L1();
-	}
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::S))
-	{
 		this->player->move(0.0f, 1.0f);
 		this->player->setVic_R1();
-	}
 
 	if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && this->player->canAttack())
 	{
