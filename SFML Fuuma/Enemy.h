@@ -11,7 +11,7 @@ private:
 	unsigned pointCount;
 	sf::CircleShape shape;
 
-	sf::Texture texture;
+	sf::Texture textureE;
 	sf::Sprite Enemy01;
 
 	int type;
@@ -23,6 +23,7 @@ private:
 
 	void initVariables();
 	void initTexture();
+	void initSprite();
 	void initShape();
 
 public:
