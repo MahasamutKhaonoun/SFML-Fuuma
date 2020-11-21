@@ -40,9 +40,10 @@ private:
 	//Enemies
 	float spawnTimer;
 	float spawnTimerMax;
+	float spawnTimer_01S;
+	float spawnTimerMax_01S;
 	std::vector<Enemy*> enemies;
-
-	
+	std::vector<Enemy*> enemies_01S;
 
 	//Private Function
 	void initWindow();

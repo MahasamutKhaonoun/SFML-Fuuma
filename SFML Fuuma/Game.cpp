@@ -62,6 +62,9 @@ void Game::initEnemies()
 {
 	this->spawnTimerMax = 50.0f;
 	this->spawnTimer = this->spawnTimerMax;
+
+	this->spawnTimerMax_01S = 50.0f;
+	this->spawnTimer_01S = this->spawnTimerMax_01S;
 }
 //Con Des
 Game::Game()
@@ -230,10 +233,10 @@ void Game::updateBullets()
 void Game::updateEnemies()
 {
 	//Spawning
-	this->spawnTimer += 0.5f;
+	this->spawnTimer += 1.0f;
 	if (this->spawnTimer >= this->spawnTimerMax)
 	{
-		this->enemies.push_back(new Enemy(this->window->getSize().x - 20.f, rand() % this->window->getSize().y ));
+		this->enemies.push_back(new Enemy(this->window->getSize().x - 20.f, rand() % this->window->getSize().y,1 ));
 		this->spawnTimer = 0.0f;
 	}
 
@@ -260,8 +263,39 @@ void Game::updateEnemies()
 
 		++counter;
 	}
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	//Spawning
+	this->spawnTimer_01S += 0.01f;
+	if (this->spawnTimer_01S >= this->spawnTimerMax_01S)
+	{
+		this->enemies_01S.push_back(new Enemy(this->window->getSize().x -20.f, rand() % this->window->getSize().y, 2));
+		this->spawnTimer_01S = 0.0f;
+	}
 
-	
+	//Update
+	unsigned counter_01S = 0;
+	for (auto* enemy_01S : this->enemies_01S)
+	{
+		enemy_01S->update_01S();
+
+		//Bullet culling (top of screen)
+		if (enemy_01S->getBounds_01S().top > this->window->getSize().y) //enemy->getBounds().left < 0.0f will delete when collision with window
+		{
+			//Delete bullet
+			delete this->enemies_01S.at(counter_01S);
+			this->enemies_01S.erase(this->enemies_01S.begin() + counter_01S);
+		}
+		//Enemy player collision  
+		else if (enemy_01S->getBounds_01S().intersects(this->player->getBounds()))
+		{
+			this->player->loseHp(this->enemies_01S.at(counter_01S)->getDamage());
+			delete this->enemies_01S.at(counter_01S);
+			this->enemies_01S.erase(this->enemies_01S.begin() + counter_01S);
+		}
+
+		++counter_01S;
+	}
 	
 }
 
@@ -346,6 +380,12 @@ void Game::render()
 	{
 		enemy->render(this->window);
 	}
+
+	for (auto* enemy_01S : this->enemies_01S)
+	{
+		enemy_01S->render(this->window);
+	}
+
 
 	this->renderGUI();
 

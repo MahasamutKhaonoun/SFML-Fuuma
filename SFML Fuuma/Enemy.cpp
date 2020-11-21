@@ -4,7 +4,7 @@
 void Enemy::initVariables()
 {
 	this->pointCount	= rand() %  10 + 3;; //min = 3 max = 10
-	this->type			= 0;
+	//this->type			= 0;
 	this->speed			= static_cast<float>(this->pointCount / 2);
 	this->hpMax			= static_cast<float>(this->pointCount);
 	this->hp			= this->hpMax;
@@ -33,7 +33,12 @@ void Enemy::initVariables()
 void Enemy::initTexture()
 {
 	//Enemies 01
-	if (!this->textureE.loadFromFile("Enemies/Enemies_01.png"))
+	if (!this->texture01.loadFromFile("Enemies/Enemies_01.png"))
+	{
+		std::cout << "Error::Could not load texture player file." << "\n";
+	}
+	//Enemies 01S
+	if (!this->texture01S.loadFromFile("Enemies/Enemies_01S.png"))
 	{
 		std::cout << "Error::Could not load texture player file." << "\n";
 	}
@@ -42,8 +47,11 @@ void Enemy::initTexture()
 void Enemy::initSprite()
 {
 	//Enemies 01
-	this->Enemy01.setTexture(this->textureE);
+	this->Enemy01.setTexture(this->texture01);
 	this->Enemy01.scale(4.0f, 4.0f);
+	//Enemies 01
+	this->Enemy01S.setTexture(this->texture01S);
+	this->Enemy01S.scale(4.0f, 4.0f);
 }
 
 void Enemy::initShape()
@@ -62,14 +70,18 @@ void Enemy::initShape()
 
 }
 
-Enemy::Enemy(float pos_x, float pos_y)
+Enemy::Enemy(float pos_x, float pos_y, int type)
 {
+	this->posX = pos_x;
+	this->posY = pos_y;
+	this->type = type;
 	this->initVariables();
 	this->initTexture();
 	this->initSprite();
 	//this->initShape();
+	this->updatePos();
 
-	this->Enemy01.setPosition(pos_x, pos_y);
+
 
 }
 
@@ -82,6 +94,11 @@ Enemy::~Enemy()
 const sf::FloatRect Enemy::getBounds() const
 {
 	return this->Enemy01.getGlobalBounds();
+}
+
+const sf::FloatRect Enemy::getBounds_01S() const
+{
+	return this->Enemy01S.getGlobalBounds();
 }
 
 const int& Enemy::getPoints() const
@@ -97,13 +114,31 @@ const int& Enemy::getDamage() const
 
 
 
+void Enemy::updatePos()
+{
+	if (type == 1)
+	{
+		this->Enemy01.setPosition(posX, posY);
+	}
+	else if (type == 2)
+	{
+		this->Enemy01S.setPosition(posX, posY);
+	}
+}
+
 //Functions
 void Enemy::update()
 {
 	this->Enemy01.move(-this->speed, 0.f);
 }
 
+void Enemy::update_01S()
+{
+	this->Enemy01S.move(-this->speed, 0.f);
+}
+
 void Enemy::render(sf::RenderTarget* target)
 {
 	target->draw(this->Enemy01);
+	target->draw(this->Enemy01S);
 }
