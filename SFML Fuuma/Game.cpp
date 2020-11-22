@@ -198,9 +198,9 @@ void Game::updateCollision()
 	}
 
 	//Top world collision
-	if (this->player->getBounds().top < 0.f)
+	if (this->player->getBounds().top < 60.f)
 	{
-		this->player->setPosition(this->player->getBounds().left, 0.f);
+		this->player->setPosition(this->player->getBounds().left, 60.f);
 	}
 
 	//Bottom world collision
@@ -232,11 +232,12 @@ void Game::updateBullets()
 
 void Game::updateEnemies()
 {
+	/////////////////////////////////////////////////-ENEMIES_01-////////////////////////////////////////////////////////
 	//Spawning
 	this->spawnTimer += 1.0f;
 	if (this->spawnTimer >= this->spawnTimerMax)
 	{
-		this->enemies.push_back(new Enemy(this->window->getSize().x - 20.f, rand() % this->window->getSize().y,1 ));
+		this->enemies.push_back(new Enemy(this->window->getSize().x - 20.f, rand() % this->window->getSize().y + 60.f,1 ));
 		this->spawnTimer = 0.0f;
 	}
 
@@ -260,17 +261,16 @@ void Game::updateEnemies()
 			delete this->enemies.at(counter);
 			this->enemies.erase(this->enemies.begin() + counter);
 		}
-
 		++counter;
 	}
-	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	/////////////////////////////////////////////////-ENEMIES_01S-////////////////////////////////////////////////////////
 	//Spawning
-	this->spawnTimer_01S += 0.01f;
+	this->spawnTimer_01S += 0.5f;
 	if (this->spawnTimer_01S >= this->spawnTimerMax_01S)
 	{
 		this->enemies_01S.push_back(new Enemy(this->window->getSize().x -20.f, rand() % this->window->getSize().y, 2));
 		this->spawnTimer_01S = 0.0f;
+		
 	}
 
 	//Update
@@ -293,7 +293,6 @@ void Game::updateEnemies()
 			delete this->enemies_01S.at(counter_01S);
 			this->enemies_01S.erase(this->enemies_01S.begin() + counter_01S);
 		}
-
 		++counter_01S;
 	}
 	
@@ -301,6 +300,7 @@ void Game::updateEnemies()
 
 void Game::updateCombat()
 {
+	//ENEMIES_01
 	for (int i = 0; i < this->enemies.size(); ++i)
 	{
 		bool enemy_deleted = false;
@@ -315,13 +315,50 @@ void Game::updateCombat()
 
 				delete this->bullets[k];
 				this->bullets.erase(this->bullets.begin() + k);
-
-			
-
 				enemy_deleted = true;
 			}
 		}
 
+	}
+	//ENEMIES_01S
+	for (int i = 0; i < this->enemies_01S.size(); ++i)
+	{
+		bool enemy_deleted = false;
+		for (size_t k = 0; k < this->bullets.size() && enemy_deleted == false; k++)
+		{
+			if (this->enemies_01S[i]->getBounds_01S().intersects(this->bullets[k]->getBounds()))
+			{
+				this->points += this->enemies_01S[i]->getPoints();
+
+				delete this->enemies_01S[i];
+				this->enemies_01S.erase(this->enemies_01S.begin() + i);
+
+				delete this->bullets[k];
+				this->bullets.erase(this->bullets.begin() + k);
+				Item_alive = true;
+				enemy_deleted = true;
+				time = 1;
+			}
+		}
+
+	}
+}
+
+void Game::updateItem()
+{
+	if (Item_alive == true)
+	{
+		if(time == 1)
+		{
+			this->Item_SP.push_back(new Enemy(this->window->getSize().x - 20.f, rand() % this->window->getSize().y, 3));
+			time = 0;
+		}
+		unsigned counter_Item = 0;
+		for (auto* ItemSP : this->Item_SP)
+		{
+			ItemSP->update_Item();
+			++counter_Item;
+		}
 	}
 }
 
@@ -340,6 +377,8 @@ void Game::update()
 
 	this->updateCombat();
 	
+	this->updateItem();
+
 	this->renderGUI();
 
 	this->updateWorld();
@@ -386,6 +425,11 @@ void Game::render()
 		enemy_01S->render(this->window);
 	}
 
+	for (auto* ItemSP : this->Item_SP)
+	{
+		ItemSP->render(this->window);
+	}
+
 
 	this->renderGUI();
 
@@ -395,5 +439,4 @@ void Game::render()
 		this->window->draw(this->gameOverText);
 	}
 	this->window->display();
-
 }

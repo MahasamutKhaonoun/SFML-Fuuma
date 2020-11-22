@@ -6,6 +6,7 @@
 #include "Player.h"
 #include "Bullet.h"
 #include "Enemy.h"
+#include "Item.h"
 
 class Game
 {
@@ -29,6 +30,10 @@ private:
 
 	//Systems
 	unsigned points;
+	float posX;
+	float posY;
+	bool Item_alive = false;
+	int time = 0;
 
 	//Player
 	Player* player;
@@ -44,7 +49,7 @@ private:
 	float spawnTimerMax_01S;
 	std::vector<Enemy*> enemies;
 	std::vector<Enemy*> enemies_01S;
-
+	std::vector<Enemy*> Item_SP;
 	//Private Function
 	void initWindow();
 	void initTextures();
@@ -69,6 +74,7 @@ public:
 	void updateBullets();
 	void updateEnemies();
 	void updateCombat();
+	void updateItem();
 	void update();
 	void renderGUI();
 	void renderWorld();

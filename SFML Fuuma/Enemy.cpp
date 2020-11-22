@@ -10,6 +10,8 @@ void Enemy::initVariables()
 	this->hp			= this->hpMax;
 	this->damage		= this->pointCount;
 	this->points		= this->pointCount;
+	this->points_SP		= 1;
+	this->speedSP		= 5;
 
 	//Ver1
 	//this->pointCount = rand() % 8 + 3; //min = 3 max = 10
@@ -42,6 +44,11 @@ void Enemy::initTexture()
 	{
 		std::cout << "Error::Could not load texture player file." << "\n";
 	}
+
+	if (!this->textureItem_01.loadFromFile("Item/ItemSP.png"))
+	{
+		std::cout << "Error::Could not load texture player file." << "\n";
+	}
 }
 
 void Enemy::initSprite()
@@ -52,6 +59,9 @@ void Enemy::initSprite()
 	//Enemies 01
 	this->Enemy01S.setTexture(this->texture01S);
 	this->Enemy01S.scale(4.0f, 4.0f);
+	//Item_SP
+	this->Item_01.setTexture(this->textureItem_01);
+	this->Item_01.scale(4.0f, 4.0f);
 }
 
 void Enemy::initShape()
@@ -75,12 +85,14 @@ Enemy::Enemy(float pos_x, float pos_y, int type)
 	this->posX = pos_x;
 	this->posY = pos_y;
 	this->type = type;
+
 	this->initVariables();
 	this->initTexture();
 	this->initSprite();
 	//this->initShape();
 	this->updatePos();
-
+	this->returnPosX();
+	this->returnPosY();
 
 
 }
@@ -101,6 +113,11 @@ const sf::FloatRect Enemy::getBounds_01S() const
 	return this->Enemy01S.getGlobalBounds();
 }
 
+const sf::FloatRect Enemy::getBounds_Item() const
+{
+	return this->Item_01.getGlobalBounds();
+}
+
 const int& Enemy::getPoints() const
 {
 	return this->points;
@@ -109,6 +126,16 @@ const int& Enemy::getPoints() const
 const int& Enemy::getDamage() const
 {
 	return this->damage;
+}
+
+const float& Enemy::returnPosX() const
+{
+	return this->posX;
+}
+
+const float& Enemy::returnPosY() const
+{
+	return this->posY;
 }
 
 
@@ -124,6 +151,11 @@ void Enemy::updatePos()
 	{
 		this->Enemy01S.setPosition(posX, posY);
 	}
+	else if (type == 3)
+	{
+		this->Item_01.setPosition(posX, posY);
+	}
+	
 }
 
 //Functions
@@ -137,8 +169,20 @@ void Enemy::update_01S()
 	this->Enemy01S.move(-this->speed, 0.f);
 }
 
+void Enemy::update_Item()
+{
+	this->Item_01.move(-this->speedSP, 0.f);
+}
+
 void Enemy::render(sf::RenderTarget* target)
 {
 	target->draw(this->Enemy01);
 	target->draw(this->Enemy01S);
+	target->draw(this->Item_01);
+	/*if (type == 3)
+	{
+		target->draw(this->Enemy01);
+		target->draw(this->Enemy01S);
+		target->draw(this->Item_01);
+	}*/
 }
