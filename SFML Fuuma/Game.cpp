@@ -3,14 +3,16 @@
 //Private Functions
 void Game::initWindow()
 {
-	this->window = new sf::RenderWindow(sf::VideoMode(1360,780),"Fuuma-Den",sf::Style::Close | sf::Style::Titlebar);
+	this->window = new sf::RenderWindow(sf::VideoMode(1600,900),"Fuuma-Den",sf::Style::Close | sf::Style::Titlebar);
 	this->window->setFramerateLimit(144);
 	this->window->setVerticalSyncEnabled(false);
 }
 void Game::initTextures()
 {
 	this->textures["BULLET"] = new sf::Texture();
+	this->textures2["BULLET"] = new sf::Texture();
 	this->textures["BULLET"] -> loadFromFile("Player/Vic Bullet.png");
+	this->textures2["BULLET"]->loadFromFile("Player/Item_Laser.png");
 }
 void Game::initGUI()
 {
@@ -21,7 +23,7 @@ void Game::initGUI()
 		std::cout << "ERROR::GAME ::Failed to load font" << "\n";
 		
 	//Init point text
-	this->pointText.setPosition(820.f, 660.f);
+	this->pointText.setPosition(920.f, 770.f);
 	this->pointText.setFont(this->font);
 	this->pointText.setCharacterSize(35);
 	this->pointText.setFillColor(sf::Color::White);
@@ -38,21 +40,21 @@ void Game::initGUI()
 	//Init player GUI
 	this->playerHpBar.setSize(sf::Vector2f(300.0f, 25.0f));
 	this->playerHpBar.setFillColor(sf::Color::Blue);
-	this->playerHpBar.setPosition(sf::Vector2f(50.0f, 670.0f));
+	this->playerHpBar.setPosition(sf::Vector2f(50.0f, 780.0f));
 
 	this->playerHpBarBack = this->playerHpBar;
 	this->playerHpBarBack.setFillColor(sf::Color::White);//(25, 25, 25, 200)
 	this->playerHpBarBack.setOutlineThickness(3.f);
 	this->playerHpBarBack.setOutlineColor(sf::Color::White);
 
-	this->ItemBarBack.setSize(sf::Vector2f(1380.0f, 200.0f));
+	this->ItemBarBack.setSize(sf::Vector2f(1600.0f, 150.0f));
 	this->ItemBarBack.setFillColor(sf::Color::Black);
-	this->ItemBarBack.setPosition(sf::Vector2f(0.0f, 650.0f));
+	this->ItemBarBack.setPosition(sf::Vector2f(0.0f, 750.0f));
 
 	//SP Point Text
-	this->SP_Text.setPosition(50.0f,725.0f);
+	this->SP_Text.setPosition(50.0f,835.0f);
 	this->SP_Text.setFont(this->font);
-	this->SP_Text.setCharacterSize(25);
+	this->SP_Text.setCharacterSize(35);
 	this->SP_Text.setFillColor(sf::Color::White);
 	//this->SP_Text.setString("SP : ");
 
@@ -62,8 +64,8 @@ void Game::initGUI()
 		std::cout << "ERROR::GAME::Could not load background texture" << "\n";
 	}
 	this->ItemBar.setTexture(this->ItemBarTex);
-	this->ItemBar.scale(1.5f, 1.5f);
-	this->ItemBar.setPosition(220.f, 720.f);
+	this->ItemBar.scale(1.8f, 2.f);
+	this->ItemBar.setPosition(280.f, 830.f);
 }
 void Game::initWorld()
 {
@@ -78,6 +80,7 @@ void Game::initWorld()
 void Game::initSystems()
 {
 	this->points = 0;
+	this->Bullet_Type = 0;
 }
 void Game::initPlayer()
 {
@@ -179,15 +182,18 @@ void Game::updateInput()
 
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::J) && this->player->canAttack())
 	{
+		if (Bullet_Type == 0)
+		{
 			this->bullets.push_back(
-			new Bullet(
-			this->textures["BULLET"], 
-			this->player->getPos().x + this->player->getBounds().width/2.f, 
-			this->player->getPos().y, 
-			1.f, 
-			0.f, 
-			5.f)
+				new Bullet(this->textures["BULLET"], this->player->getPos().x + this->player->getBounds().width / 2.f, this->player->getPos().y, 1.f, 0.f, 5.f, 1)
 			); //texture, pos_x, pos_y, dir_x, dir_y, movement_speed
+		}
+		if (Bullet_Type == 1)
+		{
+			this->bullets.push_back(
+				new Bullet(this->textures2["BULLET"], this->player->getPos().x + this->player->getBounds().width / 2.f, this->player->getPos().y, 1.f, 0.f, 5.f, 1)
+			); //texture, pos_x, pos_y, dir_x, dir_y, movement_speed
+		}
 	}
 }
 
@@ -379,27 +385,6 @@ void Game::updateCombat()
 
 void Game::updateItem()
 {
-	//for (auto* enemy_01S : this->enemies_01S)
-	//{
-	//	enemy_01S->update_01S();
-
-	//	//Bullet culling (top of screen)
-	//	if (enemy_01S->getBounds_01S().left < -50.0f) //enemy->getBounds().left < 0.0f will delete when collision with window
-	//	{
-	//		//Delete bullet
-	//		delete this->enemies_01S.at(counter_01S);
-	//		this->enemies_01S.erase(this->enemies_01S.begin() + counter_01S);
-	//	}
-	//	//Enemy player collision  
-	//	else if (enemy_01S->getBounds_01S().intersects(this->player->getBounds()))
-	//	{
-	//		this->player->loseHp(this->enemies_01S.at(counter_01S)->getDamage());
-	//		delete this->enemies_01S.at(counter_01S);
-	//		this->enemies_01S.erase(this->enemies_01S.begin() + counter_01S);
-	//	}
-	//	++counter_01S;
-	//}
-
 	if (Item_alive == true)
 	{
 		if(onetime == true)
@@ -426,6 +411,7 @@ void Game::updateItem()
 					for (int i = 0; i < 1; i++)
 					{
 						this->SP_Points += this->Item_SP[i]->getSP_Points();
+						Bullet_Type = 1;
 					}
 					delete this->Item_SP.at(counter_Item);
 					this->Item_SP.erase(this->Item_SP.begin() + counter_Item);

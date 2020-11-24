@@ -16,6 +16,7 @@ private:
 
 	//Resources
 	std::map<std::string, sf::Texture*> textures;
+	std::map<std::string, sf::Texture*> textures2;
 	std::vector<Bullet*> bullets;
 
 	//GUI
@@ -34,6 +35,7 @@ private:
 	//Systems
 	unsigned points;
 	int SP_Points;
+	int Bullet_Type;
 	float posX;
 	float posY;
 	bool Item_alive = false;
