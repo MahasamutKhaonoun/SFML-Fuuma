@@ -20,20 +20,25 @@ private:
 
 	//GUI
 	sf::Font font;
+	sf::Font font_Nikkyou;
 	sf::Text pointText;
-
 	sf::Text gameOverText;
+	sf::Text SP_Text;
 
 	//World
 	sf::Texture worldBackgroundTex;
+	sf::Texture ItemBarTex;
 	sf::Sprite worldBackground;
+	sf::Sprite ItemBar;
 
 	//Systems
 	unsigned points;
+	int SP_Points;
 	float posX;
 	float posY;
 	bool Item_alive = false;
-	int time = 0;
+	bool onetime = false;
+	bool getPoint = false;
 
 	//Player
 	Player* player;
@@ -41,6 +46,7 @@ private:
 	//PlayerGUI
 	sf::RectangleShape playerHpBar;
 	sf::RectangleShape playerHpBarBack;
+	sf::RectangleShape ItemBarBack;
 
 	//Enemies
 	float spawnTimer;

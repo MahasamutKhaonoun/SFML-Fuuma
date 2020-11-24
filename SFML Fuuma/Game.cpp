@@ -17,11 +17,13 @@ void Game::initGUI()
 	//Load font
 	if(!this->font.loadFromFile("Fonts/G7Gradius21ByteFont-Jaem.ttf"))
 		std::cout << "ERROR::GAME ::Failed to load font" << "\n";
+	if (!this->font_Nikkyou.loadFromFile("Fonts/NikkyouSans-B6aV.ttf"))
+		std::cout << "ERROR::GAME ::Failed to load font" << "\n";
 		
 	//Init point text
-	this->pointText.setPosition(1100.f, 25.f);
+	this->pointText.setPosition(820.f, 660.f);
 	this->pointText.setFont(this->font);
-	this->pointText.setCharacterSize(12);
+	this->pointText.setCharacterSize(35);
 	this->pointText.setFillColor(sf::Color::White);
 	//this->pointText.setString("test");
 
@@ -36,18 +38,42 @@ void Game::initGUI()
 	//Init player GUI
 	this->playerHpBar.setSize(sf::Vector2f(300.0f, 25.0f));
 	this->playerHpBar.setFillColor(sf::Color::Blue);
-	this->playerHpBar.setPosition(sf::Vector2f(20.0f, 20.0f));
+	this->playerHpBar.setPosition(sf::Vector2f(50.0f, 670.0f));
 
 	this->playerHpBarBack = this->playerHpBar;
 	this->playerHpBarBack.setFillColor(sf::Color::White);//(25, 25, 25, 200)
+	this->playerHpBarBack.setOutlineThickness(3.f);
+	this->playerHpBarBack.setOutlineColor(sf::Color::White);
+
+	this->ItemBarBack.setSize(sf::Vector2f(1380.0f, 200.0f));
+	this->ItemBarBack.setFillColor(sf::Color::Black);
+	this->ItemBarBack.setPosition(sf::Vector2f(0.0f, 650.0f));
+
+	//SP Point Text
+	this->SP_Text.setPosition(50.0f,725.0f);
+	this->SP_Text.setFont(this->font);
+	this->SP_Text.setCharacterSize(25);
+	this->SP_Text.setFillColor(sf::Color::White);
+	//this->SP_Text.setString("SP : ");
+
+	//ItemBar
+	if (!this->ItemBarTex.loadFromFile("Item/ItemScreen.png"))
+	{
+		std::cout << "ERROR::GAME::Could not load background texture" << "\n";
+	}
+	this->ItemBar.setTexture(this->ItemBarTex);
+	this->ItemBar.scale(1.5f, 1.5f);
+	this->ItemBar.setPosition(220.f, 720.f);
 }
 void Game::initWorld()
 {
+	//World
 	if (!this->worldBackgroundTex.loadFromFile(""))
 	{
 		std::cout << "ERROR::GAME::Could not load background texture" << "\n";
 	}
 	this->worldBackground.setTexture(this->worldBackgroundTex);
+	
 }
 void Game::initSystems()
 {
@@ -151,7 +177,7 @@ void Game::updateInput()
 		this->player->move(0.0f, 1.0f);
 		this->player->setVic_R1();
 
-	if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && this->player->canAttack())
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::J) && this->player->canAttack())
 	{
 			this->bullets.push_back(
 			new Bullet(
@@ -171,9 +197,15 @@ void Game::updateGUI()
 	ss << "SCORE : " << this->points;
 	this->pointText.setString(ss.str());
 
+	std::stringstream ssPoint;
+	ssPoint << "SP : " << this->SP_Points;
+	this->SP_Text.setString(ssPoint.str());
+
 	//Update player GUI
 	float hpPercent = static_cast<float>(this->player->getHp()) / this->player->getHpMax();
 	this->playerHpBar.setSize(sf::Vector2f(300.0f * hpPercent, this->playerHpBar.getSize().y));
+
+
 	
 
 }
@@ -234,10 +266,10 @@ void Game::updateEnemies()
 {
 	/////////////////////////////////////////////////-ENEMIES_01-////////////////////////////////////////////////////////
 	//Spawning
-	this->spawnTimer += 1.0f;
+	this->spawnTimer += 0.5f;
 	if (this->spawnTimer >= this->spawnTimerMax)
 	{
-		this->enemies.push_back(new Enemy(this->window->getSize().x - 20.f, rand() % this->window->getSize().y + 60.f,1 ));
+		this->enemies.push_back(new Enemy(this->window->getSize().x - 20.f, rand() % this->window->getSize().y,1 ));
 		this->spawnTimer = 0.0f;
 	}
 
@@ -248,7 +280,7 @@ void Game::updateEnemies()
 		enemy->update();
 
 		//Bullet culling (top of screen)
-		if (enemy->getBounds().top > this->window->getSize().y) //enemy->getBounds().left < 0.0f will delete when collision with window
+		if (enemy->getBounds().left < -50.0f) //enemy->getBounds().left < 0.0f will delete when collision with window
 		{
 			//Delete bullet
 			delete this->enemies.at(counter);
@@ -265,7 +297,7 @@ void Game::updateEnemies()
 	}
 	/////////////////////////////////////////////////-ENEMIES_01S-////////////////////////////////////////////////////////
 	//Spawning
-	this->spawnTimer_01S += 0.5f;
+	this->spawnTimer_01S += 0.05f;
 	if (this->spawnTimer_01S >= this->spawnTimerMax_01S)
 	{
 		this->enemies_01S.push_back(new Enemy(this->window->getSize().x -20.f, rand() % this->window->getSize().y, 2));
@@ -280,7 +312,7 @@ void Game::updateEnemies()
 		enemy_01S->update_01S();
 
 		//Bullet culling (top of screen)
-		if (enemy_01S->getBounds_01S().top > this->window->getSize().y) //enemy->getBounds().left < 0.0f will delete when collision with window
+		if (enemy_01S->getBounds_01S().left < -50.0f) //enemy->getBounds().left < 0.0f will delete when collision with window
 		{
 			//Delete bullet
 			delete this->enemies_01S.at(counter_01S);
@@ -335,9 +367,10 @@ void Game::updateCombat()
 
 				delete this->bullets[k];
 				this->bullets.erase(this->bullets.begin() + k);
-				Item_alive = true;
 				enemy_deleted = true;
-				time = 1;
+				Item_alive = true;
+				onetime = true;
+				getPoint = true;
 			}
 		}
 
@@ -346,17 +379,60 @@ void Game::updateCombat()
 
 void Game::updateItem()
 {
+	//for (auto* enemy_01S : this->enemies_01S)
+	//{
+	//	enemy_01S->update_01S();
+
+	//	//Bullet culling (top of screen)
+	//	if (enemy_01S->getBounds_01S().left < -50.0f) //enemy->getBounds().left < 0.0f will delete when collision with window
+	//	{
+	//		//Delete bullet
+	//		delete this->enemies_01S.at(counter_01S);
+	//		this->enemies_01S.erase(this->enemies_01S.begin() + counter_01S);
+	//	}
+	//	//Enemy player collision  
+	//	else if (enemy_01S->getBounds_01S().intersects(this->player->getBounds()))
+	//	{
+	//		this->player->loseHp(this->enemies_01S.at(counter_01S)->getDamage());
+	//		delete this->enemies_01S.at(counter_01S);
+	//		this->enemies_01S.erase(this->enemies_01S.begin() + counter_01S);
+	//	}
+	//	++counter_01S;
+	//}
+
 	if (Item_alive == true)
 	{
-		if(time == 1)
+		if(onetime == true)
 		{
 			this->Item_SP.push_back(new Enemy(this->window->getSize().x - 20.f, rand() % this->window->getSize().y, 3));
-			time = 0;
+			onetime = false;
 		}
 		unsigned counter_Item = 0;
 		for (auto* ItemSP : this->Item_SP)
 		{
 			ItemSP->update_Item();
+			//Bullet culling (top of screen)
+			if (ItemSP->getBounds_Item().top > this->window->getSize().y) //enemy->getBounds().left < 0.0f will delete when collision with window
+			{
+				//Delete bullet
+				delete this->Item_SP.at(counter_Item);
+				this->Item_SP.erase(this->enemies_01S.begin() + counter_Item);
+			}
+			//Enemy player collision  
+			else if (ItemSP->getBounds_Item().intersects(this->player->getBounds()))
+			{
+				if (getPoint == true)
+				{
+					for (int i = 0; i < 1; i++)
+					{
+						this->SP_Points += this->Item_SP[i]->getSP_Points();
+					}
+					delete this->Item_SP.at(counter_Item);
+					this->Item_SP.erase(this->Item_SP.begin() + counter_Item);
+					getPoint = false;
+				}
+				
+			}
 			++counter_Item;
 		}
 	}
@@ -389,9 +465,14 @@ void Game::update()
 
 void Game::renderGUI()
 {
-	this->window->draw(this->pointText);
+	
+	this->window->draw(this->ItemBarBack);
 	this->window->draw(this->playerHpBarBack);
 	this->window->draw(this->playerHpBar);
+	this->window->draw(this->pointText);
+	this->window->draw(this->SP_Text);
+	this->window->draw(this->ItemBar);
+	
 }
 
 void Game::renderWorld()
@@ -437,6 +518,7 @@ void Game::render()
 	if (this->player->getHp() <= 0)
 	{
 		this->window->draw(this->gameOverText);
+		printf("SP : %d", SP_Points);
 	}
 	this->window->display();
 }

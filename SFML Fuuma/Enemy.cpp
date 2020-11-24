@@ -10,7 +10,7 @@ void Enemy::initVariables()
 	this->hp			= this->hpMax;
 	this->damage		= this->pointCount;
 	this->points		= this->pointCount;
-	this->points_SP		= 1;
+	this->SP_Point		= 1;
 	this->speedSP		= 5;
 
 	//Ver1
@@ -121,6 +121,11 @@ const sf::FloatRect Enemy::getBounds_Item() const
 const int& Enemy::getPoints() const
 {
 	return this->points;
+}
+
+const int& Enemy::getSP_Points() const
+{
+	return this->SP_Point;
 }
 
 const int& Enemy::getDamage() const

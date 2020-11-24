@@ -25,7 +25,7 @@ private:
 	int hpMax;
 	int damage;
 	int points;
-	int points_SP;
+	int SP_Point;
 
 	float posX;
 	float posY;
@@ -46,6 +46,7 @@ public:
 	const sf::FloatRect getBounds_01S() const;
 	const sf::FloatRect getBounds_Item() const;
 	const int& getPoints() const;
+	const int& getSP_Points() const;
 	const int& getDamage() const;
 	const float& returnPosX() const;
 	const float& returnPosY() const;
