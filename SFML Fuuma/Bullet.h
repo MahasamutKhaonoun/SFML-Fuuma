@@ -15,11 +15,11 @@ private:
 
 	sf::Vector2f direction;
 	float movementSpeed;
-	int type;
+	int Bullet_Pos;
 
 public:
 	Bullet();
-	Bullet(sf::Texture * texture, float pos_x, float pos_y, float dir_x, float dir_y, float movement_speed,int type);
+	Bullet(sf::Texture * texture, float pos_x, float pos_y, float dir_x, float dir_y, float movement_speed,int Bullet_Pos);
 	virtual ~Bullet();
 
 	//Accessor

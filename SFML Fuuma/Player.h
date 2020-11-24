@@ -15,6 +15,9 @@ private:
 
 
 	float movementSpeed;
+	float newSpeed;
+
+	bool checkSpeed;
 
 	float attackCooldown;
 	float attackCooldownMax;
@@ -28,7 +31,7 @@ private:
 	void initSprite();
 
 public:
-	Player();
+	Player(float speed);
 	virtual ~Player();
 
 	//Accessor
@@ -55,7 +58,7 @@ public:
 	void setVic_L1();
 	void setVic_L2();
 
-
+	void updateSpeed(float newspeed,bool checkspeed);
 	void updateAttack();
 	void update();
 	void render(sf::RenderTarget& target);

@@ -48,7 +48,7 @@ void Game::initGUI()
 	this->playerHpBarBack.setOutlineColor(sf::Color::White);
 
 	this->ItemBarBack.setSize(sf::Vector2f(1600.0f, 150.0f));
-	this->ItemBarBack.setFillColor(sf::Color::Black);
+	this->ItemBarBack.setFillColor(sf::Color::Blue);
 	this->ItemBarBack.setPosition(sf::Vector2f(0.0f, 750.0f));
 
 	//SP Point Text
@@ -81,10 +81,11 @@ void Game::initSystems()
 {
 	this->points = 0;
 	this->Bullet_Type = 0;
+	this->MovementSpeed = 2.f;
 }
 void Game::initPlayer()
 {
-	this->player = new Player();
+	this->player = new Player(MovementSpeed);
 
 }
 void Game::initEnemies()
@@ -179,19 +180,23 @@ void Game::updateInput()
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::S))
 		this->player->move(0.0f, 1.0f);
 		this->player->setVic_R1();
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::U))
+	{
+		this->player->updateSpeed(0.05f,true);
+	}
 
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::J) && this->player->canAttack())
 	{
 		if (Bullet_Type == 0)
 		{
 			this->bullets.push_back(
-				new Bullet(this->textures["BULLET"], this->player->getPos().x + this->player->getBounds().width / 2.f, this->player->getPos().y, 1.f, 0.f, 5.f, 1)
+				new Bullet(this->textures["BULLET"], this->player->getPos().x + this->player->getBounds().width / 2.f, this->player->getPos().y, 1.f, 0.f, 5.f, 25)
 			); //texture, pos_x, pos_y, dir_x, dir_y, movement_speed
 		}
 		if (Bullet_Type == 1)
 		{
 			this->bullets.push_back(
-				new Bullet(this->textures2["BULLET"], this->player->getPos().x + this->player->getBounds().width / 2.f, this->player->getPos().y, 1.f, 0.f, 5.f, 1)
+				new Bullet(this->textures2["BULLET"], this->player->getPos().x + this->player->getBounds().width / 2.f, this->player->getPos().y, 1.f, 0.f, 5.f, -20)
 			); //texture, pos_x, pos_y, dir_x, dir_y, movement_speed
 		}
 	}
@@ -347,7 +352,6 @@ void Game::updateCombat()
 			if (this->enemies[i]->getBounds().intersects(this->bullets[k]->getBounds()))
 			{
 				this->points += this->enemies[i]->getPoints();
-
 				delete this->enemies[i];
 				this->enemies.erase(this->enemies.begin() + i);
 
@@ -381,6 +385,7 @@ void Game::updateCombat()
 		}
 
 	}
+	
 }
 
 void Game::updateItem()
@@ -422,6 +427,11 @@ void Game::updateItem()
 			++counter_Item;
 		}
 	}
+}
+
+void Game::updateOption()
+{
+
 }
 
 void Game::update()

@@ -36,6 +36,7 @@ private:
 	unsigned points;
 	int SP_Points;
 	int Bullet_Type;
+	float MovementSpeed;
 	float posX;
 	float posY;
 	bool Item_alive = false;
@@ -83,6 +84,7 @@ public:
 	void updateEnemies();
 	void updateCombat();
 	void updateItem();
+	void updateOption();
 	void update();
 	void renderGUI();
 	void renderWorld();

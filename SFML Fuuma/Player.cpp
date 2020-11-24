@@ -2,7 +2,7 @@
 
 void Player::initVariables()
 {
-	this->movementSpeed = 2.0f;
+	//this->movementSpeed = 2.f;
 	this->attackCooldownMax = 30.0f;
 	this->attackCooldown = this->attackCooldownMax;
 	this->hpMax = 100;
@@ -54,8 +54,9 @@ void Player::initSprite()
 	
 }
 
-Player::Player()
+Player::Player(float speed)
 {
+	this->movementSpeed = speed;
 	this->initVariables();
 	this->initTexture();
 	this->initSprite();
@@ -113,12 +114,12 @@ void Player::loseHp(const int value)
 
 void Player::move(const float dirX, const float dirY)
 {
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::K))
+	/*if (sf::Keyboard::isKeyPressed(sf::Keyboard::K))
 	{
 		this->movementSpeed = 3.f;
-	}
+	}*/
 	this->sprite.move(this->movementSpeed * dirX, this->movementSpeed * dirY);
-	this->movementSpeed = 2.0f;
+	//this->movementSpeed = 2.0f;
 }
 
 const bool Player::canAttack()
@@ -166,6 +167,17 @@ void Player::setVic_L2()
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::W))
 	{
 		this->sprite.setTexture(this->texture_L2);
+	}
+}
+
+void Player::updateSpeed(float newspeed, bool checkspeed)
+{
+	this->checkSpeed = checkspeed;
+	this->newSpeed = newspeed;
+	if (checkSpeed == true)
+	{
+		this->movementSpeed += newspeed;
+		checkSpeed = false;
 	}
 }
 
