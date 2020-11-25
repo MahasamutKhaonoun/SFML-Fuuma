@@ -182,7 +182,11 @@ void Game::updateInput()
 		this->player->setVic_R1();
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::U))
 	{
-		this->player->updateSpeed(0.05f,true);
+		if (checkSpeed == true)
+		{
+			this->player->updateSpeed(true);
+			checkSpeed = false;
+		}
 	}
 
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::J) && this->player->canAttack())
@@ -416,6 +420,7 @@ void Game::updateItem()
 					for (int i = 0; i < 1; i++)
 					{
 						this->SP_Points += this->Item_SP[i]->getSP_Points();
+						checkSpeed = true;
 						Bullet_Type = 1;
 					}
 					delete this->Item_SP.at(counter_Item);
@@ -431,7 +436,7 @@ void Game::updateItem()
 
 void Game::updateOption()
 {
-
+	
 }
 
 void Game::update()
@@ -450,6 +455,8 @@ void Game::update()
 	this->updateCombat();
 	
 	this->updateItem();
+
+	this->updateOption();
 
 	this->renderGUI();
 

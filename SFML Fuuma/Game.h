@@ -42,6 +42,7 @@ private:
 	bool Item_alive = false;
 	bool onetime = false;
 	bool getPoint = false;
+	bool checkSpeed;
 
 	//Player
 	Player* player;

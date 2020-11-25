@@ -170,14 +170,20 @@ void Player::setVic_L2()
 	}
 }
 
-void Player::updateSpeed(float newspeed, bool checkspeed)
+void Player::updateSpeed(bool checkspeed)
 {
 	this->checkSpeed = checkspeed;
-	this->newSpeed = newspeed;
+	//this->newSpeed = newspeed;
 	if (checkSpeed == true)
 	{
-		this->movementSpeed += newspeed;
-		checkSpeed = false;
+			this->movementSpeed += 1.f;
+			checkSpeed = false;
+			printf("%.2f ", movementSpeed);
+	}
+	if (movementSpeed > 5.f)
+	{
+		this->movementSpeed = 6.f;
+		printf("End Speed");
 	}
 }
 

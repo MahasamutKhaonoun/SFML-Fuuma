@@ -58,7 +58,7 @@ public:
 	void setVic_L1();
 	void setVic_L2();
 
-	void updateSpeed(float newspeed,bool checkspeed);
+	void updateSpeed(bool checkspeed);
 	void updateAttack();
 	void update();
 	void render(sf::RenderTarget& target);
