@@ -81,7 +81,8 @@ void Game::initSystems()
 {
 	this->points = 0;
 	this->Bullet_Type = 0;
-	this->MovementSpeed = 2.f;
+	this->MovementSpeed = 3.f;
+	this->SP_Points = 0;
 }
 void Game::initPlayer()
 {
@@ -180,28 +181,28 @@ void Game::updateInput()
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::S))
 		this->player->move(0.0f, 1.0f);
 		this->player->setVic_R1();
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::U))
-	{
-		if (checkSpeed == true)
-		{
-			this->player->updateSpeed(true);
-			checkSpeed = false;
-		}
-	}
+	
 
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::J) && this->player->canAttack())
 	{
 		if (Bullet_Type == 0)
 		{
 			this->bullets.push_back(
-				new Bullet(this->textures["BULLET"], this->player->getPos().x + this->player->getBounds().width / 2.f, this->player->getPos().y, 1.f, 0.f, 5.f, 25)
+				new Bullet(this->textures["BULLET"], this->player->getPos().x + this->player->getBounds().width / 2.f, this->player->getPos().y, 1.f, 0.f, 5.f, 25, 0)
 			); //texture, pos_x, pos_y, dir_x, dir_y, movement_speed
 		}
-		if (Bullet_Type == 1)
+		else if (Bullet_Type == 1)
 		{
 			this->bullets.push_back(
-				new Bullet(this->textures2["BULLET"], this->player->getPos().x + this->player->getBounds().width / 2.f, this->player->getPos().y, 1.f, 0.f, 5.f, -20)
+				new Bullet(this->textures2["BULLET"], this->player->getPos().x + this->player->getBounds().width / 2.f, this->player->getPos().y, 1.f, 0.f, 5.f, -20, 0)
 			); //texture, pos_x, pos_y, dir_x, dir_y, movement_speed
+		}
+		else if (Bullet_Type == 2)
+		{
+			this->bullets.push_back(
+				new Bullet(this->textures["BULLET"], this->player->getPos().x + this->player->getBounds().width / 2.f, this->player->getPos().y, 1.f, 0.f, 5.f, 25, 1)
+			); //texture, pos_x, pos_y, dir_x, dir_y, movement_speed
+
 		}
 	}
 }
@@ -312,7 +313,7 @@ void Game::updateEnemies()
 	}
 	/////////////////////////////////////////////////-ENEMIES_01S-////////////////////////////////////////////////////////
 	//Spawning
-	this->spawnTimer_01S += 0.05f;
+	this->spawnTimer_01S += 0.1f;
 	if (this->spawnTimer_01S >= this->spawnTimerMax_01S)
 	{
 		this->enemies_01S.push_back(new Enemy(this->window->getSize().x -20.f, rand() % this->window->getSize().y, 2));
@@ -421,7 +422,6 @@ void Game::updateItem()
 					{
 						this->SP_Points += this->Item_SP[i]->getSP_Points();
 						checkSpeed = true;
-						Bullet_Type = 1;
 					}
 					delete this->Item_SP.at(counter_Item);
 					this->Item_SP.erase(this->Item_SP.begin() + counter_Item);
@@ -436,7 +436,34 @@ void Game::updateItem()
 
 void Game::updateOption()
 {
-	
+	if (SP_Points > 6)
+	{
+		SP_Points = 1;
+	}
+
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::U))
+	{
+		if (SP_Points == 1)
+		{
+			if (checkSpeed == true)
+			{
+				
+				this->player->updateSpeed(true);
+				SP_Points = 0;
+				checkSpeed = false;
+			}
+		}
+		else if (SP_Points == 2)
+		{
+			Bullet_Type = 1;
+			SP_Points = 0;
+		}
+		else if (SP_Points == 3)
+		{
+			Bullet_Type = 2;
+			SP_Points = 0;
+		}
+	}
 }
 
 void Game::update()

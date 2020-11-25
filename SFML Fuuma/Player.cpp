@@ -191,7 +191,7 @@ void Player::updateAttack()
 {
 	if (this->attackCooldown < this->attackCooldownMax)
 	{
-		this->attackCooldown += 0.5f;
+		this->attackCooldown += 0.8f;
 	}
 	
 }
