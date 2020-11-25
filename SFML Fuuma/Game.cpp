@@ -185,25 +185,45 @@ void Game::updateInput()
 
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::J) && this->player->canAttack())
 	{
+		//Normal Bullet
 		if (Bullet_Type == 0)
 		{
 			this->bullets.push_back(
-				new Bullet(this->textures["BULLET"], this->player->getPos().x + this->player->getBounds().width / 2.f, this->player->getPos().y, 1.f, 0.f, 5.f, 25, 0)
-			); //texture, pos_x, pos_y, dir_x, dir_y, movement_speed
+				new Bullet(this->textures["BULLET"], this->player->getPos().x + this->player->getBounds().width / 2.f, this->player->getPos().y, 1.f, 0.f, 5.f, 25, 0, false)
+			); //texture, pos_x, pos_y, dir_x, dir_y, movement_speed, Bullet_Pos, type, Missile_ON
 		}
+		//Missle
 		else if (Bullet_Type == 1)
 		{
 			this->bullets.push_back(
-				new Bullet(this->textures2["BULLET"], this->player->getPos().x + this->player->getBounds().width / 2.f, this->player->getPos().y, 1.f, 0.f, 5.f, -20, 0)
-			); //texture, pos_x, pos_y, dir_x, dir_y, movement_speed
+				new Bullet(this->textures["BULLET"], this->player->getPos().x + this->player->getBounds().width / 2.f, this->player->getPos().y, 1.f, 0.f, 5.f, 25, 0, true)
+			); //texture, pos_x, pos_y, dir_x, dir_y, movement_speed, Bullet_Pos, type, Missile_ON
 		}
+		//Double Bullet
 		else if (Bullet_Type == 2)
 		{
-			this->bullets.push_back(
-				new Bullet(this->textures["BULLET"], this->player->getPos().x + this->player->getBounds().width / 2.f, this->player->getPos().y, 1.f, 0.f, 5.f, 25, 1)
-			); //texture, pos_x, pos_y, dir_x, dir_y, movement_speed
-
+			if (checkMissile_On == true)
+			{
+				this->bullets.push_back(
+					new Bullet(this->textures["BULLET"], this->player->getPos().x + this->player->getBounds().width / 2.f, this->player->getPos().y, 1.f, 0.f, 5.f, 25, 1, true)
+				); //texture, pos_x, pos_y, dir_x, dir_y, movement_speed, Bullet_Pos, type, Missile_ON
+			}
+			else 
+			{
+				this->bullets.push_back(
+					new Bullet(this->textures["BULLET"], this->player->getPos().x + this->player->getBounds().width / 2.f, this->player->getPos().y, 1.f, 0.f, 5.f, 25, 1, false)
+				); //texture, pos_x, pos_y, dir_x, dir_y, movement_speed, Bullet_Pos, type, Missile_ON
+			}
 		}
+		//Ripple Bullet
+		else if (Bullet_Type == 3)
+		{
+			this->bullets.push_back(
+				new Bullet(this->textures2["BULLET"], this->player->getPos().x + this->player->getBounds().width / 2.f, this->player->getPos().y, 1.f, 0.f, 5.f, -20, 0, false)
+			); //texture, pos_x, pos_y, dir_x, dir_y, movement_speed, Bullet_Pos, type, Missile_ON
+		}
+		
+
 	}
 }
 
@@ -456,11 +476,17 @@ void Game::updateOption()
 		else if (SP_Points == 2)
 		{
 			Bullet_Type = 1;
+			this->checkMissile_On = true;
 			SP_Points = 0;
 		}
 		else if (SP_Points == 3)
 		{
 			Bullet_Type = 2;
+			SP_Points = 0;
+		}
+		else if (SP_Points == 4)
+		{
+			Bullet_Type = 3;
 			SP_Points = 0;
 		}
 	}

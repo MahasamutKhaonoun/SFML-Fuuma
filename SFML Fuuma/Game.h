@@ -43,6 +43,7 @@ private:
 	bool onetime = false;
 	bool getPoint = false;
 	bool checkSpeed;
+	bool checkMissile_On = false;
 
 	//Player
 	Player* player;

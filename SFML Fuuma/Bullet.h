@@ -12,6 +12,7 @@ private:
 
 	sf::Sprite shape;
 	sf::Sprite shape2;
+	sf::Sprite shape3;
 	sf::Texture* texture;
 
 	sf::Vector2f direction;
@@ -22,10 +23,10 @@ private:
 	float pos_X;
 	float pos_Y;
 
-	bool checkDouble;
+	bool checkMissile;
 
 public:
-	Bullet(sf::Texture * texture, float pos_x, float pos_y, float dir_x, float dir_y, float movement_speed,int Bullet_Pos, int type);
+	Bullet(sf::Texture * texture, float pos_x, float pos_y, float dir_x, float dir_y, float movement_speed,int Bullet_Pos, int type, bool checkmissile);
 	virtual ~Bullet();
 
 	//Accessor
