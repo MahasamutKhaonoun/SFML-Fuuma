@@ -17,7 +17,10 @@ private:
 	//Resources
 	std::map<std::string, sf::Texture*> textures;
 	std::map<std::string, sf::Texture*> textures2;
+	std::map<std::string, sf::Texture*> textures3;
 	std::vector<Bullet*> bullets;
+	std::vector<Bullet*> bullets2;
+	std::vector<Bullet*> bullets3;
 
 	//GUI
 	sf::Font font;
@@ -44,6 +47,7 @@ private:
 	bool getPoint = false;
 	bool checkSpeed;
 	bool checkMissile_On = false;
+	bool checkDouble_On = false;
 
 	//Player
 	Player* player;

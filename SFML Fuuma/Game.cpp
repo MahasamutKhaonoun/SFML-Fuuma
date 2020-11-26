@@ -195,9 +195,31 @@ void Game::updateInput()
 		//Missle
 		else if (Bullet_Type == 1)
 		{
-			this->bullets.push_back(
-				new Bullet(this->textures["BULLET"], this->player->getPos().x + this->player->getBounds().width / 2.f, this->player->getPos().y, 1.f, 0.f, 5.f, 25, 0, true)
-			); //texture, pos_x, pos_y, dir_x, dir_y, movement_speed, Bullet_Pos, type, Missile_ON
+			if (checkDouble_On == true)
+			{
+				this->bullets.push_back(
+					new Bullet(this->textures["BULLET"], this->player->getPos().x + this->player->getBounds().width / 2.f, this->player->getPos().y, 1.f, 0.f, 5.f, 25, 0, false)
+				); //texture, pos_x, pos_y, dir_x, dir_y, movement_speed, Bullet_Pos, type, Missile_ON
+
+				this->bullets2.push_back(
+					new Bullet(this->textures["BULLET"], this->player->getPos().x + this->player->getBounds().width / 2.f, this->player->getPos().y, 1.f, 0.f, 5.f, 25, 9, true)
+				); //texture, pos_x, pos_y, dir_x, dir_y, movement_speed, Bullet_Pos, type, Missile_ON
+
+				this->bullets3.push_back(
+					new Bullet(this->textures["BULLET"], this->player->getPos().x + this->player->getBounds().width / 2.f, this->player->getPos().y, 1.f, 0.f, 5.f, 25, 1, false)
+				); //texture, pos_x, pos_y, dir_x, dir_y, movement_speed, Bullet_Pos, type, Missile_ON
+			}
+			else
+			{
+				this->bullets.push_back(
+					new Bullet(this->textures["BULLET"], this->player->getPos().x + this->player->getBounds().width / 2.f, this->player->getPos().y, 1.f, 0.f, 5.f, 25, 0, false)
+				); //texture, pos_x, pos_y, dir_x, dir_y, movement_speed, Bullet_Pos, type, Missile_ON
+
+				this->bullets2.push_back(
+					new Bullet(this->textures["BULLET"], this->player->getPos().x + this->player->getBounds().width / 2.f, this->player->getPos().y, 1.f, 0.f, 5.f, 25, 9, true)
+				); //texture, pos_x, pos_y, dir_x, dir_y, movement_speed, Bullet_Pos, type, Missile_ON
+			}
+			
 		}
 		//Double Bullet
 		else if (Bullet_Type == 2)
@@ -205,12 +227,24 @@ void Game::updateInput()
 			if (checkMissile_On == true)
 			{
 				this->bullets.push_back(
-					new Bullet(this->textures["BULLET"], this->player->getPos().x + this->player->getBounds().width / 2.f, this->player->getPos().y, 1.f, 0.f, 5.f, 25, 1, true)
+					new Bullet(this->textures["BULLET"], this->player->getPos().x + this->player->getBounds().width / 2.f, this->player->getPos().y, 1.f, 0.f, 5.f, 25, 0, false)
+				); //texture, pos_x, pos_y, dir_x, dir_y, movement_speed, Bullet_Pos, type, Missile_ON
+
+				this->bullets2.push_back(
+					new Bullet(this->textures["BULLET"], this->player->getPos().x + this->player->getBounds().width / 2.f, this->player->getPos().y, 1.f, 0.f, 5.f, 25, 9, true)
+				); //texture, pos_x, pos_y, dir_x, dir_y, movement_speed, Bullet_Pos, type, Missile_ON
+
+				this->bullets3.push_back(
+					new Bullet(this->textures["BULLET"], this->player->getPos().x + this->player->getBounds().width / 2.f, this->player->getPos().y, 1.f, 0.f, 5.f, 25, 1, false)
 				); //texture, pos_x, pos_y, dir_x, dir_y, movement_speed, Bullet_Pos, type, Missile_ON
 			}
 			else 
 			{
 				this->bullets.push_back(
+					new Bullet(this->textures["BULLET"], this->player->getPos().x + this->player->getBounds().width / 2.f, this->player->getPos().y, 1.f, 0.f, 5.f, 25, 0, false)
+				); //texture, pos_x, pos_y, dir_x, dir_y, movement_speed, Bullet_Pos, type, Missile_ON
+
+				this->bullets3.push_back(
 					new Bullet(this->textures["BULLET"], this->player->getPos().x + this->player->getBounds().width / 2.f, this->player->getPos().y, 1.f, 0.f, 5.f, 25, 1, false)
 				); //texture, pos_x, pos_y, dir_x, dir_y, movement_speed, Bullet_Pos, type, Missile_ON
 			}
@@ -286,7 +320,7 @@ void Game::updateBullets()
 		bullet->update();
 	
 		//Bullet culling (top of screen)
-		if (bullet->getBounds().top + bullet->getBounds().height < 0.0f)
+		if (bullet->getBounds().left > 1600.0f)
 		{
 			//Delete bullet
 			delete this->bullets.at(counter);
@@ -295,6 +329,40 @@ void Game::updateBullets()
 		}
 
 		++counter;
+	}
+
+	unsigned counter_Missile = 0;
+	for (auto* bullet2 : this->bullets2)
+	{
+		bullet2->update();
+
+		//Bullet culling (top of screen)
+		if (bullet2->getBounds().left > 1600.0f)
+		{
+			//Delete bullet
+			delete this->bullets2.at(counter_Missile);
+			this->bullets2.erase(this->bullets2.begin() + counter_Missile);
+
+		}
+
+		++counter_Missile;
+	}
+
+	unsigned counter_Double = 0;
+	for (auto* bullet3 : this->bullets3)
+	{
+		bullet3->update();
+
+		//Bullet culling (top of screen)
+		if (bullet3->getBounds().left > 1600.0f)
+		{
+			//Delete bullet
+			delete this->bullets3.at(counter_Double);
+			this->bullets3.erase(this->bullets3.begin() + counter_Double);
+
+		}
+
+		++counter_Missile;
 	}
 }
 
@@ -482,6 +550,7 @@ void Game::updateOption()
 		else if (SP_Points == 3)
 		{
 			Bullet_Type = 2;
+			this->checkDouble_On = true;
 			SP_Points = 0;
 		}
 		else if (SP_Points == 4)
@@ -550,6 +619,16 @@ void Game::render()
 	for (auto* bullet : this->bullets)
 	{
 		bullet->render(this->window);
+	}
+
+	for (auto* bullet2 : this->bullets2)
+	{
+		bullet2->render(this->window);
+	}
+
+	for (auto* bullet3 : this->bullets3)
+	{
+		bullet3->render(this->window);
 	}
 
 	for (auto* enemy : this->enemies)

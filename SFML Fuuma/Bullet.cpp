@@ -3,15 +3,22 @@
 
 Bullet::Bullet(sf::Texture * texture, float pos_x, float pos_y, float dir_x, float dir_y, float movement_speed,int Bullet_Pos,int type,bool checkmissile)
 {
+	if (!this->texture_Missile.loadFromFile("Player/Item_Missile.png"))
+	{
+		std::cout << "Error::Could not load texture player file." << "\n";
+	}
 	this->Bullet_Pos = Bullet_Pos;
 	this->Type = type;
 	this->pos_X = pos_x;
 	this->pos_Y = pos_y;
 	this->checkMissile = checkmissile;
 
-	this->shape.setTexture(*texture);
-	this->shape.scale(2.0f, 3.0f);
-	this->shape.setPosition(pos_X + 65, pos_Y + Bullet_Pos); //25 -20
+	if (Type == 0)
+	{
+		this->shape.setTexture(*texture);
+		this->shape.scale(2.0f, 3.0f);
+		this->shape.setPosition(pos_X + 65, pos_Y + Bullet_Pos); //25 -20
+	}
 
 	if (Type == 1)
 	{
@@ -22,9 +29,9 @@ Bullet::Bullet(sf::Texture * texture, float pos_x, float pos_y, float dir_x, flo
 
 	if (checkMissile == true)
 	{
-		this->shape3.setTexture(*texture);
+		this->shape3.setTexture(texture_Missile);
 		this->shape3.scale(2.0f, 3.0f);
-		this->shape3.setPosition(pos_X + 5, pos_Y + Bullet_Pos + 35); //25 -20
+		this->shape3.setPosition(pos_X - 10, pos_Y + Bullet_Pos + 35); //25 -20
 	}
 
 	this->direction.x = dir_x;
@@ -46,7 +53,12 @@ const sf::FloatRect Bullet::getBounds() const
 
 const sf::FloatRect Bullet::getBounds2() const
 {
-	return sf::FloatRect();
+	return this->shape2.getGlobalBounds();
+}
+
+const sf::FloatRect Bullet::getBounds3() const
+{
+	return this->shape3.getGlobalBounds();
 }
 
 void Bullet::updateDouble()
@@ -58,8 +70,8 @@ void Bullet::update()
 {
 	//Movement
 	//this->updateDouble();
-	this->shape.move(this->movementSpeed * this->direction);
-	this->shape2.move(-this->movementSpeed * this->direction * 1.5f);
+	this->shape.move(this->movementSpeed * this->direction * 2.f);
+	this->shape2.move(-this->movementSpeed * this->direction * 2.f);
 	this->shape3.move(this->movementSpeed * this->direction * 0.8f);
 
 }

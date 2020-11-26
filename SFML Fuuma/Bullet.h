@@ -13,7 +13,9 @@ private:
 	sf::Sprite shape;
 	sf::Sprite shape2;
 	sf::Sprite shape3;
-	sf::Texture* texture;
+	sf::Sprite shape_Missile;
+	//sf::Texture* texture;
+	sf::Texture texture_Missile;
 
 	sf::Vector2f direction;
 	float movementSpeed;
@@ -32,6 +34,7 @@ public:
 	//Accessor
 	const sf::FloatRect getBounds() const;
 	const sf::FloatRect getBounds2() const;
+	const sf::FloatRect getBounds3() const;
 
 	void updateDouble();
 	void update();
