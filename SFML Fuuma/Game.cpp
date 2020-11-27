@@ -169,6 +169,8 @@ void Game::updatePollEvents()
 
 void Game::updateInput()
 {
+	this->posX = this->player->getPos().x + this->player->getBounds().width / 2.f;
+	this->posY = this->player->getPos().y;
 	//Move player
 	this->player->setVic();
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::A))
@@ -337,12 +339,11 @@ void Game::updateBullets()
 		bullet2->update();
 
 		//Bullet culling (top of screen)
-		if (bullet2->getBounds().left > 1600.0f)
+		if (bullet2->getBounds().left > 3000.0f)
 		{
 			//Delete bullet
 			delete this->bullets2.at(counter_Missile);
 			this->bullets2.erase(this->bullets2.begin() + counter_Missile);
-
 		}
 
 		++counter_Missile;
@@ -436,7 +437,7 @@ void Game::updateEnemies()
 
 void Game::updateCombat()
 {
-	//ENEMIES_01
+	//ENEMIES_01 Normal Bullet
 	for (int i = 0; i < this->enemies.size(); ++i)
 	{
 		bool enemy_deleted = false;
@@ -453,9 +454,45 @@ void Game::updateCombat()
 				enemy_deleted = true;
 			}
 		}
-
 	}
-	//ENEMIES_01S
+	//ENEMIES_01 Missile
+	for (int i = 0; i < this->enemies.size(); ++i)
+	{
+		bool enemy_deleted = false;
+		for (size_t k = 0; k < this->bullets2.size() && enemy_deleted == false; k++)
+		{
+			if (this->enemies[i]->getBounds().intersects(this->bullets2[k]->getBounds3()))
+			{
+				this->points += this->enemies[i]->getPoints();
+				delete this->enemies[i];
+				this->enemies.erase(this->enemies.begin() + i);
+
+				delete this->bullets2[k];
+				this->bullets2.erase(this->bullets2.begin() + k);
+				enemy_deleted = true;
+			}
+		}
+	}
+
+	//ENEMIES_01 Double
+	for (int i = 0; i < this->enemies.size(); ++i)
+	{
+		bool enemy_deleted = false;
+		for (size_t k = 0; k < this->bullets3.size() && enemy_deleted == false; k++)
+		{
+			if (this->enemies[i]->getBounds().intersects(this->bullets3[k]->getBounds2()))
+			{
+				this->points += this->enemies[i]->getPoints();
+				delete this->enemies[i];
+				this->enemies.erase(this->enemies.begin() + i);
+
+				delete this->bullets3[k];
+				this->bullets3.erase(this->bullets3.begin() + k);
+				enemy_deleted = true;
+			}
+		}
+	}
+	//ENEMIES_01S Normal Bullet
 	for (int i = 0; i < this->enemies_01S.size(); ++i)
 	{
 		bool enemy_deleted = false;
@@ -476,9 +513,52 @@ void Game::updateCombat()
 				getPoint = true;
 			}
 		}
+	}
+	//ENEMIES_01S Missile
+	for (int i = 0; i < this->enemies_01S.size(); ++i)
+	{
+		bool enemy_deleted = false;
+		for (size_t k = 0; k < this->bullets2.size() && enemy_deleted == false; k++)
+		{
+			if (this->enemies_01S[i]->getBounds_01S().intersects(this->bullets2[k]->getBounds3()))
+			{
+				this->points += this->enemies_01S[i]->getPoints();
 
+				delete this->enemies_01S[i];
+				this->enemies_01S.erase(this->enemies_01S.begin() + i);
+
+				delete this->bullets2[k];
+				this->bullets2.erase(this->bullets2.begin() + k);
+				enemy_deleted = true;
+				Item_alive = true;
+				onetime = true;
+				getPoint = true;
+			}
+		}
 	}
 	
+	//ENEMIES_01S Double
+	for (int i = 0; i < this->enemies_01S.size(); ++i)
+	{
+		bool enemy_deleted = false;
+		for (size_t k = 0; k < this->bullets3.size() && enemy_deleted == false; k++)
+		{
+			if (this->enemies_01S[i]->getBounds_01S().intersects(this->bullets3[k]->getBounds2()))
+			{
+				this->points += this->enemies_01S[i]->getPoints();
+
+				delete this->enemies_01S[i];
+				this->enemies_01S.erase(this->enemies_01S.begin() + i);
+
+				delete this->bullets3[k];
+				this->bullets3.erase(this->bullets3.begin() + k);
+				enemy_deleted = true;
+				Item_alive = true;
+				onetime = true;
+				getPoint = true;
+			}
+		}
+	}
 }
 
 void Game::updateItem()
@@ -609,6 +689,14 @@ void Game::render()
 {
 	this->window->clear();
 
+	//Game Over screen
+	if (this->player->getHp() <= 0)
+	{
+		this->player->alreadyDead(true,posX,posY);
+		this->window->draw(this->gameOverText);
+		printf("SP : %d", SP_Points);
+	}
+
 	//Draw world
 	this->renderWorld();
 
@@ -649,11 +737,5 @@ void Game::render()
 
 	this->renderGUI();
 
-	//Game Over screen
-	if (this->player->getHp() <= 0)
-	{
-		this->window->draw(this->gameOverText);
-		printf("SP : %d", SP_Points);
-	}
 	this->window->display();
 }

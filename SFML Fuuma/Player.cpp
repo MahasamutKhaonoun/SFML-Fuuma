@@ -42,6 +42,12 @@ void Player::initTexture()
 	{
 		std::cout << "Error::Could not load texture player file." << "\n";
 	}
+
+	//Vic Viper Dead
+	else if (!this->texture_Dead.loadFromFile("Player/Vic Viper_Dead.png"))
+	{
+		std::cout << "Error::Could not load texture player file." << "\n";
+	}
 }
 
 void Player::initSprite()
@@ -51,7 +57,6 @@ void Player::initSprite()
 
 	//Resize the sprite
 	this->sprite.scale(5.0f, 4.0f);
-	
 }
 
 Player::Player(float speed)
@@ -110,6 +115,15 @@ void Player::loseHp(const int value)
 	{
 		this->hp = 0;
 	}
+}
+
+void Player::alreadyDead(bool dead, float pos_X, float pos_Y)
+{
+	this->checkDead = dead;
+	this->sprite_Dead.setTexture(this->texture_Dead);
+	this->sprite_Dead.scale(8.0f, 7.0f);
+	this->sprite_Dead.setPosition(pos_X - 120,pos_Y-30);
+	//this->sprite_Dead.setPosition(dirx)
 }
 
 void Player::move(const float dirX, const float dirY)
@@ -205,4 +219,8 @@ void Player::update()
 void Player::render(sf::RenderTarget& target)
 {
 	target.draw(this->sprite);
+	if (checkDead == true)
+	{
+		target.draw(this->sprite_Dead);
+	}
 }
