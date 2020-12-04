@@ -175,6 +175,7 @@ void Game::updateInput()
 	this->player->setVic();
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::A))
 		this->player->move(-1.0f, 0.0f);
+		//this->player->openLifeForce(true, posX, posY);
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::D))
 		this->player->move(1.0f, 0.0f);
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::W))
@@ -183,6 +184,9 @@ void Game::updateInput()
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::S))
 		this->player->move(0.0f, 1.0f);
 		this->player->setVic_R1();
+	//Debug
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::O))
+		this->player->loseHp(200);
 	
 
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::J) && this->player->canAttack())
@@ -615,7 +619,7 @@ void Game::updateOption()
 		{
 			if (checkSpeed == true)
 			{
-				
+				this->player->openLifeForce(true, this->player->getPos().x + this->player->getBounds().width / 2.f, this->player->getPos().y);
 				this->player->updateSpeed(true);
 				SP_Points = 0;
 				checkSpeed = false;
@@ -692,7 +696,8 @@ void Game::render()
 	//Game Over screen
 	if (this->player->getHp() <= 0)
 	{
-		this->player->alreadyDead(true,posX,posY);
+		this->player->openLifeForce(true, posX, posY);
+		//this->player->alreadyDead(true,posX,posY);
 		this->window->draw(this->gameOverText);
 		printf("SP : %d", SP_Points);
 	}

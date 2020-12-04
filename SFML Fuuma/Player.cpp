@@ -44,7 +44,13 @@ void Player::initTexture()
 	}
 
 	//Vic Viper Dead
-	else if (!this->texture_Dead.loadFromFile("Player/Vic Viper_Dead.png"))
+	else if (!this->texture_Dead.loadFromFile("Player/126794005_374521303768688_3223597176188986233_n.png"))
+	{
+		std::cout << "Error::Could not load texture player file." << "\n";
+	}
+
+	//Life Force
+	else if (!this->texture_LifeForce.loadFromFile("Player/Life Force.png"))
 	{
 		std::cout << "Error::Could not load texture player file." << "\n";
 	}
@@ -117,11 +123,20 @@ void Player::loseHp(const int value)
 	}
 }
 
+void Player::openLifeForce(bool open, float pos_X, float pos_Y)
+{
+	this->checkLifeforce = open;
+	this->sprite_LifeForce.setTexture(this->texture_LifeForce);
+	this->sprite_LifeForce.setPosition(pos_X - 120, pos_Y - 20);
+	this->sprite_LifeForce.setScale(5.f, 5.f);
+
+}
+
 void Player::alreadyDead(bool dead, float pos_X, float pos_Y)
 {
 	this->checkDead = dead;
 	this->sprite_Dead.setTexture(this->texture_Dead);
-	this->sprite_Dead.scale(8.0f, 7.0f);
+	this->sprite_Dead.scale(1.5f, 1.5f); //1.5 1.5
 	this->sprite_Dead.setPosition(pos_X - 120,pos_Y-30);
 	//this->sprite_Dead.setPosition(dirx)
 }
@@ -133,6 +148,10 @@ void Player::move(const float dirX, const float dirY)
 		this->movementSpeed = 3.f;
 	}*/
 	this->sprite.move(this->movementSpeed * dirX, this->movementSpeed * dirY);
+	if (checkLifeforce == true)
+	{
+		this->sprite_LifeForce.move(this->movementSpeed * dirX, this->movementSpeed * dirY);
+	}
 	//this->movementSpeed = 2.0f;
 }
 
@@ -218,9 +237,16 @@ void Player::update()
 
 void Player::render(sf::RenderTarget& target)
 {
+	if (checkLifeforce == true)
+	{
+	target.draw(this->sprite_LifeForce);
+	}
+
 	target.draw(this->sprite);
+
 	if (checkDead == true)
 	{
 		target.draw(this->sprite_Dead);
 	}
+	
 }

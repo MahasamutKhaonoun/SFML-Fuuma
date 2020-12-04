@@ -7,12 +7,14 @@ class Player
 {
 private:
 	sf::Sprite sprite;
+	sf::Sprite sprite_LifeForce;
 	sf::Sprite sprite_Dead;
 	sf::Texture texture;
 	sf::Texture texture_R1;
 	sf::Texture texture_R2;
 	sf::Texture texture_L1;
 	sf::Texture texture_L2;
+	sf::Texture texture_LifeForce;
 	sf::Texture texture_Dead;
 
 
@@ -21,6 +23,7 @@ private:
 
 	bool checkSpeed;
 	bool checkDead;
+	bool checkLifeforce;
 
 	float attackCooldown;
 	float attackCooldownMax;
@@ -48,6 +51,8 @@ public:
 	void setPosition(const float x, const float y);
 	void setHp(const int hp);
 	void loseHp(const int value);
+
+	void openLifeForce(bool open, float pos_X, float pos_Y);
 	void alreadyDead(bool dead, float pos_X, float pos_Y);
 
 
