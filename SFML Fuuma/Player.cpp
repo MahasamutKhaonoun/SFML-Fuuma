@@ -125,18 +125,29 @@ void Player::loseHp(const int value)
 
 void Player::openLifeForce(bool open, float pos_X, float pos_Y)
 {
+	this->Pos_X = pos_X;
+	this->Pos_Y = pos_Y;
 	this->checkLifeforce = open;
 	this->sprite_LifeForce.setTexture(this->texture_LifeForce);
+	//this->sprite_LifeForce.setTextureRect(sf::IntRect(0, 0, 30, 30));
 	this->sprite_LifeForce.setPosition(pos_X - 120, pos_Y - 20);
+	
 	this->sprite_LifeForce.setScale(5.f, 5.f);
 
+}
+
+void Player::updateLifeForce(float pos_X, float pos_Y)
+{
+	//this->sprite_LifeForce.setPosition(this->sprite.getPosition().x/2, this->sprite.getPosition().y / 2);
+	//this->sprite_LifeForce.setPosition(this->sprite.getPosition());
+	this->sprite_LifeForce.setPosition(pos_X - 120, pos_Y - 20);
 }
 
 void Player::alreadyDead(bool dead, float pos_X, float pos_Y)
 {
 	this->checkDead = dead;
 	this->sprite_Dead.setTexture(this->texture_Dead);
-	this->sprite_Dead.scale(1.5f, 1.5f); //1.5 1.5
+	this->sprite_Dead.setScale(1.5f, 1.5f); //1.5 1.5
 	this->sprite_Dead.setPosition(pos_X - 120,pos_Y-30);
 	//this->sprite_Dead.setPosition(dirx)
 }
@@ -239,7 +250,7 @@ void Player::render(sf::RenderTarget& target)
 {
 	if (checkLifeforce == true)
 	{
-	target.draw(this->sprite_LifeForce);
+		target.draw(this->sprite_LifeForce);
 	}
 
 	target.draw(this->sprite);

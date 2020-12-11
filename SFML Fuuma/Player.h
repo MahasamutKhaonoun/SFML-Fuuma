@@ -31,6 +31,9 @@ private:
 	int hp;
 	int hpMax;
 
+	float Pos_X;
+	float Pos_Y;
+
 	//Private Functions
 	void initVariables();
 	void initTexture();
@@ -53,6 +56,7 @@ public:
 	void loseHp(const int value);
 
 	void openLifeForce(bool open, float pos_X, float pos_Y);
+	void updateLifeForce(float pos_X, float pos_Y);
 	void alreadyDead(bool dead, float pos_X, float pos_Y);
 
 

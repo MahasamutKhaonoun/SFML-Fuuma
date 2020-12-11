@@ -39,6 +39,7 @@ private:
 	unsigned points;
 	int SP_Points;
 	int Bullet_Type;
+	int LifeForce_count;
 	float MovementSpeed;
 	float posX;
 	float posY;
@@ -48,6 +49,7 @@ private:
 	bool checkSpeed;
 	bool checkMissile_On = false;
 	bool checkDouble_On = false;
+	bool checkLifeForce_On = false;
 
 	//Player
 	Player* player;

@@ -32,7 +32,7 @@ void Game::initGUI()
 	this->gameOverText.setFont(this->font);
 	this->gameOverText.setCharacterSize(60);
 	this->gameOverText.setFillColor(sf::Color::Red);
-	this->gameOverText .setString("GAME OVER!");
+	this->gameOverText.setString("GAME OVER!");
 	this->gameOverText.setPosition(
 		this->window->getSize().x / 2 - this->gameOverText.getGlobalBounds().width / 2.0f, 
 		this->window->getSize().y / 2 - this->gameOverText.getGlobalBounds().height /2.0f);
@@ -83,6 +83,7 @@ void Game::initSystems()
 	this->Bullet_Type = 0;
 	this->MovementSpeed = 3.f;
 	this->SP_Points = 0;
+	this->LifeForce_count = 6;
 }
 void Game::initPlayer()
 {
@@ -185,8 +186,11 @@ void Game::updateInput()
 		this->player->move(0.0f, 1.0f);
 		this->player->setVic_R1();
 	//Debug
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::O))
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::P))
 		this->player->loseHp(200);
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::O))
+		this->player->openLifeForce(true, this->player->getPos().x + this->player->getBounds().width / 2.f, this->player->getPos().y);
+	
 	
 
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::J) && this->player->canAttack())
@@ -263,7 +267,6 @@ void Game::updateInput()
 			); //texture, pos_x, pos_y, dir_x, dir_y, movement_speed, Bullet_Pos, type, Missile_ON
 		}
 		
-
 	}
 }
 
@@ -297,24 +300,29 @@ void Game::updateCollision()
 	if (this->player->getBounds().left < 0.f)
 	{
 		this->player->setPosition(0.0f, this->player->getBounds().top);
+		this->player->updateLifeForce(75.0f, this->player->getBounds().top);
 	}
+	
 
 	//Right world collision
 	else if (this->player->getBounds().left + this->player->getBounds().width >= this->window->getSize().x)
 	{
-		this->player->setPosition(this->window->getSize().x - this->player->getBounds().width, this->player->getBounds().top);
+		this->player->setPosition(this->window->getSize().x - this->player->getBounds().width, this->player->getBounds().top );
+		this->player->updateLifeForce(this->window->getSize().x - this->player->getBounds().width + 75.0f, this->player->getBounds().top );
 	}
 
 	//Top world collision
 	if (this->player->getBounds().top < 60.f)
 	{
-		this->player->setPosition(this->player->getBounds().left, 60.f);
+		this->player->setPosition(this->player->getBounds().left , 60.f);
+		this->player->updateLifeForce(this->player->getBounds().left + 75.0f, 60.f);
 	}
 
 	//Bottom world collision
 	else if (this->player->getBounds().top + this->player->getBounds().height >= this->window->getSize().y)
 	{
 		this->player->setPosition(this->player->getBounds().left, this->window->getSize().y - this->player->getBounds().height);
+		this->player->updateLifeForce(this->player->getBounds().left + 75.0f, this->window->getSize().y - this->player->getBounds().height);
 	}
 }
 
@@ -398,9 +406,18 @@ void Game::updateEnemies()
 		//Enemy player collision  
 		else if (enemy->getBounds().intersects(this->player->getBounds()))
 		{
-			this->player->loseHp(this->enemies.at(counter)->getDamage());
-			delete this->enemies.at(counter);
-			this->enemies.erase(this->enemies.begin() + counter);
+			if (checkLifeForce_On == false)
+			{
+				this->player->loseHp(this->enemies.at(counter)->getDamage());
+				delete this->enemies.at(counter);
+				this->enemies.erase(this->enemies.begin() + counter);
+			}
+			else if (checkLifeForce_On == true)
+			{
+				delete this->enemies.at(counter);
+				this->enemies.erase(this->enemies.begin() + counter);
+			}
+			
 		}
 		++counter;
 	}
@@ -430,9 +447,19 @@ void Game::updateEnemies()
 		//Enemy player collision  
 		else if (enemy_01S->getBounds_01S().intersects(this->player->getBounds()))
 		{
-			this->player->loseHp(this->enemies_01S.at(counter_01S)->getDamage());
-			delete this->enemies_01S.at(counter_01S);
-			this->enemies_01S.erase(this->enemies_01S.begin() + counter_01S);
+			if (checkLifeForce_On == false)
+			{
+				this->player->loseHp(this->enemies_01S.at(counter_01S)->getDamage());
+				delete this->enemies_01S.at(counter_01S);
+				this->enemies_01S.erase(this->enemies_01S.begin() + counter_01S);
+			}
+			else if (checkLifeForce_On == true)
+			{
+				delete this->enemies_01S.at(counter_01S);
+				this->enemies_01S.erase(this->enemies_01S.begin() + counter_01S);
+			}
+
+			
 		}
 		++counter_01S;
 	}
@@ -619,7 +646,9 @@ void Game::updateOption()
 		{
 			if (checkSpeed == true)
 			{
-				this->player->openLifeForce(true, this->player->getPos().x + this->player->getBounds().width / 2.f, this->player->getPos().y);
+				//this->player->openLifeForce(true, this->player->getPos().x + this->player->getBounds().width / 2.f, this->player->getPos().y);
+				//this->player->updateLifeForce(this->player->getPos().x + this->player->getBounds().width / 2.f, this->player->getPos().y);
+				checkLifeForce_On = true;
 				this->player->updateSpeed(true);
 				SP_Points = 0;
 				checkSpeed = false;
@@ -696,8 +725,8 @@ void Game::render()
 	//Game Over screen
 	if (this->player->getHp() <= 0)
 	{
-		this->player->openLifeForce(true, posX, posY);
-		//this->player->alreadyDead(true,posX,posY);
+		
+		this->player->alreadyDead(true, posX, posY);
 		this->window->draw(this->gameOverText);
 		printf("SP : %d", SP_Points);
 	}
