@@ -131,13 +131,14 @@ void Player::openLifeForce(bool open, float pos_X, float pos_Y)
 	this->sprite_LifeForce.setTexture(this->texture_LifeForce);
 	//this->sprite_LifeForce.setTextureRect(sf::IntRect(0, 0, 30, 30));
 	this->sprite_LifeForce.setPosition(pos_X - 120, pos_Y - 20);
+	//this->sprite_LifeForce.setOrigin();
 	this->sprite_LifeForce.setScale(5.f, 5.f);
 
 }
 
 void Player::updateLifeForce(float pos_X, float pos_Y)
 {
-	//this->sprite_LifeForce.setPosition(this->sprite.getPosition().x/2, this->sprite.getPosition().y / 2);
+	//this->sprite_LifeForce.setPosition(this->sprite.getPosition().x/10, this->sprite.getPosition().y / 10);
 	//this->sprite_LifeForce.setPosition(this->sprite.getPosition());
 	this->sprite_LifeForce.setPosition(pos_X - 120, pos_Y - 20);
 }
@@ -243,6 +244,7 @@ void Player::updateAttack()
 void Player::update()
 {
 	this->updateAttack();
+
 }
 
 void Player::render(sf::RenderTarget& target)

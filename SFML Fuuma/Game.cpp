@@ -190,6 +190,18 @@ void Game::updateInput()
 		this->player->loseHp(200);
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::O))
 		this->player->openLifeForce(true, this->player->getPos().x + this->player->getBounds().width / 2.f, this->player->getPos().y);
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Z))
+		this->SP_Points = 1;
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::X))
+		this->SP_Points = 2;
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::C))
+		this->SP_Points = 3;
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::V))
+		this->SP_Points = 4;
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::B))
+		this->SP_Points = 5;
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::N))
+		this->SP_Points = 6;
 		
 	
 
@@ -414,10 +426,11 @@ void Game::updateEnemies()
 			}
 			else if (checkLifeForce_On == true)
 			{
-					this->LifeForce_count -= 1;
-					printf("%d\n", LifeForce_count);
-					delete this->enemies.at(counter);
-					this->enemies.erase(this->enemies.begin() + counter);
+				this->points += 60.0f;
+				this->LifeForce_count -= 1;
+				printf("%d\n", LifeForce_count);
+				delete this->enemies.at(counter);
+				this->enemies.erase(this->enemies.begin() + counter);
 				
 			}
 			
@@ -457,12 +470,12 @@ void Game::updateEnemies()
 				this->enemies_01S.erase(this->enemies_01S.begin() + counter_01S);
 			}
 			else if (checkLifeForce_On == true)
-			{			
-					this->LifeForce_count -= 1.0f;
-					printf("%d\n", LifeForce_count);
-					delete this->enemies_01S.at(counter_01S);
-					this->enemies_01S.erase(this->enemies_01S.begin() + counter_01S);
-
+			{
+				this->points += 60.0f;
+				this->LifeForce_count -= 1.0f;
+				printf("%d\n", LifeForce_count);
+				delete this->enemies_01S.at(counter_01S);
+				this->enemies_01S.erase(this->enemies_01S.begin() + counter_01S);
 				
 			}
 
@@ -653,7 +666,7 @@ void Game::updateOption()
 		this->player->openLifeForce(false, this->player->getPos().x + this->player->getBounds().width / 2.f, this->player->getPos().y);
 	}
 
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::U))
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::U)) 
 	{
 		if (SP_Points == 1)
 		{
@@ -661,9 +674,7 @@ void Game::updateOption()
 			{
 				//this->player->openLifeForce(true, this->player->getPos().x + this->player->getBounds().width / 2.f, this->player->getPos().y);
 				//this->player->updateLifeForce(this->player->getPos().x + this->player->getBounds().width / 2.f, this->player->getPos().y);
-				checkLifeForce_On = true;
-				this->LifeForce_count = 5.0f;
-				printf("%d\n", LifeForce_count);
+				
 				this->player->updateSpeed(true);
 				SP_Points = 0;
 				checkSpeed = false;
@@ -684,7 +695,17 @@ void Game::updateOption()
 		else if (SP_Points == 4)
 		{
 			Bullet_Type = 3;
+			this->checkMissile_On = false;
+			this->checkDouble_On = false;
 			SP_Points = 0;
+		}
+		else if (SP_Points == 6)
+		{
+			this->player->openLifeForce(true, this->player->getPos().x + this->player->getBounds().width / 2.f, this->player->getPos().y);
+			checkLifeForce_On = true;
+			this->LifeForce_count = 5.0f;
+			SP_Points = 0;
+			printf("%d\n", LifeForce_count);
 		}
 	}
 }
@@ -743,7 +764,7 @@ void Game::render()
 		
 		this->player->alreadyDead(true, posX, posY);
 		this->window->draw(this->gameOverText);
-		printf("SP : %d", SP_Points);
+		//printf("SP : %d", SP_Points);
 	}
 
 	//Draw world
