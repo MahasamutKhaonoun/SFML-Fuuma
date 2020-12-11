@@ -83,7 +83,7 @@ void Game::initSystems()
 	this->Bullet_Type = 0;
 	this->MovementSpeed = 3.f;
 	this->SP_Points = 0;
-	this->LifeForce_count = 6;
+	this->LifeForce_count = 5.0f;
 }
 void Game::initPlayer()
 {
@@ -190,7 +190,7 @@ void Game::updateInput()
 		this->player->loseHp(200);
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::O))
 		this->player->openLifeForce(true, this->player->getPos().x + this->player->getBounds().width / 2.f, this->player->getPos().y);
-	
+		
 	
 
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::J) && this->player->canAttack())
@@ -414,8 +414,11 @@ void Game::updateEnemies()
 			}
 			else if (checkLifeForce_On == true)
 			{
-				delete this->enemies.at(counter);
-				this->enemies.erase(this->enemies.begin() + counter);
+					this->LifeForce_count -= 1;
+					printf("%d\n", LifeForce_count);
+					delete this->enemies.at(counter);
+					this->enemies.erase(this->enemies.begin() + counter);
+				
 			}
 			
 		}
@@ -454,9 +457,13 @@ void Game::updateEnemies()
 				this->enemies_01S.erase(this->enemies_01S.begin() + counter_01S);
 			}
 			else if (checkLifeForce_On == true)
-			{
-				delete this->enemies_01S.at(counter_01S);
-				this->enemies_01S.erase(this->enemies_01S.begin() + counter_01S);
+			{			
+					this->LifeForce_count -= 1.0f;
+					printf("%d\n", LifeForce_count);
+					delete this->enemies_01S.at(counter_01S);
+					this->enemies_01S.erase(this->enemies_01S.begin() + counter_01S);
+
+				
 			}
 
 			
@@ -639,6 +646,12 @@ void Game::updateOption()
 	{
 		SP_Points = 1;
 	}
+	if (LifeForce_count == 0)
+	{
+		this->LifeForce_count = 0;
+		checkLifeForce_On = false;
+		this->player->openLifeForce(false, this->player->getPos().x + this->player->getBounds().width / 2.f, this->player->getPos().y);
+	}
 
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::U))
 	{
@@ -649,6 +662,8 @@ void Game::updateOption()
 				//this->player->openLifeForce(true, this->player->getPos().x + this->player->getBounds().width / 2.f, this->player->getPos().y);
 				//this->player->updateLifeForce(this->player->getPos().x + this->player->getBounds().width / 2.f, this->player->getPos().y);
 				checkLifeForce_On = true;
+				this->LifeForce_count = 5.0f;
+				printf("%d\n", LifeForce_count);
 				this->player->updateSpeed(true);
 				SP_Points = 0;
 				checkSpeed = false;

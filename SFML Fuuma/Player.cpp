@@ -131,7 +131,6 @@ void Player::openLifeForce(bool open, float pos_X, float pos_Y)
 	this->sprite_LifeForce.setTexture(this->texture_LifeForce);
 	//this->sprite_LifeForce.setTextureRect(sf::IntRect(0, 0, 30, 30));
 	this->sprite_LifeForce.setPosition(pos_X - 120, pos_Y - 20);
-	
 	this->sprite_LifeForce.setScale(5.f, 5.f);
 
 }
