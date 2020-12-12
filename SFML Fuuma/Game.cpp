@@ -172,19 +172,29 @@ void Game::updateInput()
 {
 	this->posX = this->player->getPos().x + this->player->getBounds().width / 2.f;
 	this->posY = this->player->getPos().y;
-	//Move player
+	//Move player Main
 	this->player->setVic();
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::A))
 		this->player->move(-1.0f, 0.0f);
-		//this->player->openLifeForce(true, posX, posY);
+		this->player->updateOption_1(1, this->player->getPos().x + this->player->getBounds().width / 2.f, this->player->getPos().y);
+
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::D))
 		this->player->move(1.0f, 0.0f);
+		this->player->updateOption_1(1, this->player->getPos().x + this->player->getBounds().width / 2.f, this->player->getPos().y);
+
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::W))
 		this->player->move(0.0f, -1.0f);
+		this->player->updateOption_1(1, this->player->getPos().x + this->player->getBounds().width / 2.f, this->player->getPos().y);
 		this->player->setVic_L1();
+
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::S))
 		this->player->move(0.0f, 1.0f);
+		this->player->updateOption_1(1, this->player->getPos().x + this->player->getBounds().width / 2.f, this->player->getPos().y);
 		this->player->setVic_R1();
+	//Move player Main
+	/*if (sf::Keyboard::isKeyPressed(sf::Keyboard::D) && sf::Keyboard::isKeyPressed(sf::Keyboard::W))
+		this->player->updateOption_1(1, this->player->getPos().x + this->player->getBounds().width / 2.f, this->player->getPos().y);*/
+	
 	//Debug
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::P))
 		this->player->loseHp(200);
@@ -202,9 +212,9 @@ void Game::updateInput()
 		this->SP_Points = 5;
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::N))
 		this->SP_Points = 6;
-		
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::M))
+		this->player->openOption_1(true, this->player->getPos().x + this->player->getBounds().width / 2.f, this->player->getPos().y);
 	
-
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::J) && this->player->canAttack())
 	{
 		//Normal Bullet
@@ -213,6 +223,10 @@ void Game::updateInput()
 			this->bullets.push_back(
 				new Bullet(this->textures["BULLET"], this->player->getPos().x + this->player->getBounds().width / 2.f, this->player->getPos().y, 1.f, 0.f, 5.f, 25, 0, false)
 			); //texture, pos_x, pos_y, dir_x, dir_y, movement_speed, Bullet_Pos, type, Missile_ON
+
+			//this->bullets.push_back(
+			//	new Bullet(this->textures["BULLET"], this->player->getPos().x + this->player->getBounds().width / 2.f - 50.0f, this->player->getPos().y + 50.0f, 1.f, 0.f, 5.f, 25, 0, false)
+			//); //texture, pos_x, pos_y, dir_x, dir_y, movement_speed, Bullet_Pos, type, Missile_ON
 		}
 		//Missle
 		else if (Bullet_Type == 1)

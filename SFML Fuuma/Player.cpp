@@ -54,6 +54,12 @@ void Player::initTexture()
 	{
 		std::cout << "Error::Could not load texture player file." << "\n";
 	}
+
+	//Option_1
+	else if (!this->texture_Option_1.loadFromFile("Player/Item_Option_1.png"))
+	{
+		std::cout << "Error::Could not load texture player file." << "\n";
+	}
 }
 
 void Player::initSprite()
@@ -143,6 +149,61 @@ void Player::updateLifeForce(float pos_X, float pos_Y)
 	this->sprite_LifeForce.setPosition(pos_X - 120, pos_Y - 20);
 }
 
+void Player::openOption_1(bool open, float pos_X, float pos_Y)
+{
+	this->Pos_X = pos_X;
+	this->Pos_Y = pos_Y;
+	this->checkOption_1 = open;
+	this->sprite_Option_1.setTexture(this->texture_Option_1);
+	this->sprite_Option_1.setPosition(pos_X - 20 , pos_Y - 80 );
+	this->sprite_Option_1.setScale(5.f, 5.f);
+}
+
+void Player::updateOption_1(int setPos, float pos_X, float pos_Y)
+{
+	this->setPos = setPos;
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::D))
+	{
+		this->sprite_Option_1.setPosition(pos_X - 150, pos_Y);
+	}
+
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::W))
+	{
+		this->sprite_Option_1.setPosition(pos_X - 20 , pos_Y + 80);
+	}
+
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::A))
+	{
+		this->sprite_Option_1.setPosition(pos_X + 120, pos_Y );
+	}
+
+	if(sf::Keyboard::isKeyPressed(sf::Keyboard::S))
+	{
+		this->sprite_Option_1.setPosition(pos_X - 20, pos_Y - 80);
+	}
+
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::D) && sf::Keyboard::isKeyPressed(sf::Keyboard::W))
+	{
+		this->sprite_Option_1.setPosition(pos_X - 120, pos_Y + 60);
+	}
+
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::W) && sf::Keyboard::isKeyPressed(sf::Keyboard::A))
+	{
+		this->sprite_Option_1.setPosition(pos_X + 90, pos_Y + 60);
+	}
+
+
+	/*if (sf::Keyboard::isKeyPressed(sf::Keyboard::D))
+	{
+		if (this->setPos == 1)
+		{
+			this->sprite_Option_1.setPosition(pos_X - 150, pos_Y);
+		}
+	}*/
+	
+	
+}
+
 void Player::alreadyDead(bool dead, float pos_X, float pos_Y)
 {
 	this->checkDead = dead;
@@ -162,6 +223,10 @@ void Player::move(const float dirX, const float dirY)
 	if (checkLifeforce == true)
 	{
 		this->sprite_LifeForce.move(this->movementSpeed * dirX, this->movementSpeed * dirY);
+	}
+	if (checkOption_1 == true)
+	{
+		this->sprite_Option_1.move(this->movementSpeed * dirX, this->movementSpeed * dirY);
 	}
 	//this->movementSpeed = 2.0f;
 }
@@ -253,7 +318,10 @@ void Player::render(sf::RenderTarget& target)
 	{
 		target.draw(this->sprite_LifeForce);
 	}
-
+	if (checkOption_1 == true)
+	{
+		target.draw(this->sprite_Option_1);
+	}
 	target.draw(this->sprite);
 
 	if (checkDead == true)
