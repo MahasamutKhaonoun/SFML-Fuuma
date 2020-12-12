@@ -50,6 +50,15 @@ private:
 	bool checkMissile_On = false;
 	bool checkDouble_On = false;
 	bool checkLifeForce_On = false;
+	bool checkOption_1 = false;
+	bool option_Pos1 = false;
+	bool option_Pos2 = false;
+	bool option_Pos3 = false;
+	bool option_Pos4 = false;
+	bool option_Pos5 = false;
+	bool option_Pos6 = false;
+	bool option_Pos7 = false;
+	bool option_Pos8 = false;
 
 	//Player
 	Player* player;

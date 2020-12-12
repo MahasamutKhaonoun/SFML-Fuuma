@@ -175,25 +175,70 @@ void Game::updateInput()
 	//Move player Main
 	this->player->setVic();
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::A))
+	{
 		this->player->move(-1.0f, 0.0f);
 		this->player->updateOption_1(1, this->player->getPos().x + this->player->getBounds().width / 2.f, this->player->getPos().y);
-
+		this->option_Pos1 = true;
+		this->option_Pos2 = false;
+		this->option_Pos3 = false;
+		this->option_Pos4 = false;
+		this->option_Pos5 = false;
+		this->option_Pos6 = false;
+		this->option_Pos7 = false;
+		this->option_Pos8 = false;
+	
+	}
+		
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::D))
+	{
 		this->player->move(1.0f, 0.0f);
 		this->player->updateOption_1(1, this->player->getPos().x + this->player->getBounds().width / 2.f, this->player->getPos().y);
-
+		this->option_Pos1 = false;
+		this->option_Pos2 = false;
+		this->option_Pos3 = true;
+		this->option_Pos4 = false;
+		this->option_Pos5 = false;
+		this->option_Pos6 = false;
+		this->option_Pos7 = false;
+		this->option_Pos8 = false;
+	}
+	
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::W))
+	{
 		this->player->move(0.0f, -1.0f);
 		this->player->updateOption_1(1, this->player->getPos().x + this->player->getBounds().width / 2.f, this->player->getPos().y);
 		this->player->setVic_L1();
+		this->option_Pos1 = false;
+		this->option_Pos2 = false;
+		this->option_Pos3 = false;
+		this->option_Pos4 = true;
+		this->option_Pos5 = false;
+		this->option_Pos6 = false;
+		this->option_Pos7 = false;
+		this->option_Pos8 = false;
+	}
+		
 
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::S))
+	{
 		this->player->move(0.0f, 1.0f);
 		this->player->updateOption_1(1, this->player->getPos().x + this->player->getBounds().width / 2.f, this->player->getPos().y);
 		this->player->setVic_R1();
+		this->option_Pos1 = false;
+		this->option_Pos2 = true;
+		this->option_Pos3 = false;
+		this->option_Pos4 = false;
+		this->option_Pos5 = false;
+		this->option_Pos6 = false;
+		this->option_Pos7 = false;
+		this->option_Pos8 = false;
+	}
+		
 	//Move player Main
 	/*if (sf::Keyboard::isKeyPressed(sf::Keyboard::D) && sf::Keyboard::isKeyPressed(sf::Keyboard::W))
-		this->player->updateOption_1(1, this->player->getPos().x + this->player->getBounds().width / 2.f, this->player->getPos().y);*/
+	{
+
+	}*/
 	
 	//Debug
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::P))
@@ -213,20 +258,56 @@ void Game::updateInput()
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::N))
 		this->SP_Points = 6;
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::M))
-		this->player->openOption_1(true, this->player->getPos().x + this->player->getBounds().width / 2.f, this->player->getPos().y);
+	{
+		this->player->openOption_1(true, this->player->getPos().x + this->player->getBounds().width / 2.f - 130.0f, this->player->getPos().y + 80.0f);
+		this->checkOption_1 = true;
+	}
+		
 	
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::J) && this->player->canAttack())
 	{
 		//Normal Bullet
 		if (Bullet_Type == 0)
 		{
-			this->bullets.push_back(
-				new Bullet(this->textures["BULLET"], this->player->getPos().x + this->player->getBounds().width / 2.f, this->player->getPos().y, 1.f, 0.f, 5.f, 25, 0, false)
-			); //texture, pos_x, pos_y, dir_x, dir_y, movement_speed, Bullet_Pos, type, Missile_ON
-
 			//this->bullets.push_back(
-			//	new Bullet(this->textures["BULLET"], this->player->getPos().x + this->player->getBounds().width / 2.f - 50.0f, this->player->getPos().y + 50.0f, 1.f, 0.f, 5.f, 25, 0, false)
+			//	new Bullet(this->textures["BULLET"], this->player->getPos().x + this->player->getBounds().width / 2.f, this->player->getPos().y, 1.f, 0.f, 5.f, 25, 0, false)
 			//); //texture, pos_x, pos_y, dir_x, dir_y, movement_speed, Bullet_Pos, type, Missile_ON
+		if (this->checkOption_1 == true)
+		{
+			if (this->option_Pos1 == true) // ขวา
+			{
+
+				this->bullets.push_back(
+					new Bullet(this->textures["BULLET"], this->player->getPos().x + this->player->getBounds().width / 2.f + 70.0f, this->player->getPos().y - 10.0f, 1.f, 0.f, 5.f, 25, 0, false)
+				); //texture, pos_x, pos_y, dir_x, dir_y, movement_speed, Bullet_Pos, type, Missile_ON
+
+			}
+			if (this->option_Pos2 == true) //บน
+			{
+
+				this->bullets.push_back(
+					new Bullet(this->textures["BULLET"], this->player->getPos().x + this->player->getBounds().width / 2.f - 50.0f, this->player->getPos().y - 90.0f, 1.f, 0.f, 5.f, 25, 0, false)
+				); //texture, pos_x, pos_y, dir_x, dir_y, movement_speed, Bullet_Pos, type, Missile_ON
+
+			}
+			if (this->option_Pos3 == true) //ซ้าย
+			{
+
+				this->bullets.push_back(
+					new Bullet(this->textures["BULLET"], this->player->getPos().x + this->player->getBounds().width / 2.f - 180.0f, this->player->getPos().y - 10.0f, 1.f, 0.f, 5.f, 25, 0, false)
+				); //texture, pos_x, pos_y, dir_x, dir_y, movement_speed, Bullet_Pos, type, Missile_ON
+
+			}
+			if (this->option_Pos4 == true) //ล่าง
+			{
+
+				this->bullets.push_back(
+					new Bullet(this->textures["BULLET"], this->player->getPos().x + this->player->getBounds().width / 2.f - 50.0f, this->player->getPos().y + 70.0f, 1.f, 0.f, 5.f, 25, 0, false)
+				); //texture, pos_x, pos_y, dir_x, dir_y, movement_speed, Bullet_Pos, type, Missile_ON
+
+			}
+		}
+			
 		}
 		//Missle
 		else if (Bullet_Type == 1)
@@ -722,6 +803,8 @@ void Game::updateOption()
 			printf("%d\n", LifeForce_count);
 		}
 	}
+
+	
 }
 
 void Game::update()

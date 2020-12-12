@@ -192,6 +192,11 @@ void Player::updateOption_1(int setPos, float pos_X, float pos_Y)
 		this->sprite_Option_1.setPosition(pos_X + 90, pos_Y + 60);
 	}
 
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::A) && sf::Keyboard::isKeyPressed(sf::Keyboard::S))
+	{
+		this->sprite_Option_1.setPosition(pos_X + 90, pos_Y - 60);
+	}
+
 
 	/*if (sf::Keyboard::isKeyPressed(sf::Keyboard::D))
 	{
