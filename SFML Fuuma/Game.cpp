@@ -195,6 +195,7 @@ void Game::run()
 			this->update();
 			this->render();
 		}
+		
 
 	}
 	
@@ -217,13 +218,14 @@ void Game::updatePollEvents()
 		{
 			this->window->close();
 		}
-		if (e.Event::KeyPressed && e.Event::key.code == sf::Keyboard::Escape)
-		{
-			this->namePage = 1.0f;
-			this->gameStart = false;
-		}
+		
 		if (this->gameStart == false)
 		{
+			if (e.Event::KeyPressed && e.Event::key.code == sf::Keyboard::Escape)
+			{
+				this->namePage = 1.0f;
+				this->gameStart = false;
+			}
 			if (e.Event::KeyPressed && e.Event::key.code == sf::Keyboard::Enter)
 			{
 				if (this->choiceMenu == 1) //Start
@@ -248,7 +250,6 @@ void Game::updatePollEvents()
 			}
 			if (e.Event::KeyPressed && e.Event::key.code == sf::Keyboard::W)
 			{
-
 				this->choiceMenu -= 0.5f;
 				if (this->choiceMenu == 0)
 				{
@@ -279,10 +280,8 @@ void Game::updatePollEvents()
 		}
 		if (this->choiceMenu == 4)
 		{
-
 			this->choice_Ship.setPosition(320.0f, 750.0f);
 		}
-		
 	}
 }
 
@@ -399,8 +398,8 @@ void Game::updateInput()
 	}
 	
 	//Debug
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::P))
-		this->player->loseHp(200);
+	/*if (sf::Keyboard::isKeyPressed(sf::Keyboard::P))
+		this->player->loseHp(200);*/
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::O))
 		this->player->openLifeForce(true, this->player->getPos().x + this->player->getBounds().width / 2.f, this->player->getPos().y);
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Z))
@@ -989,7 +988,7 @@ void Game::updateEnemies()
 		enemy->update();
 
 		//Bullet culling (top of screen)
-		if (enemy->getBounds().left < -50.0f) //enemy->getBounds().left < 0.0f will delete when collision with window
+		if (enemy->getBounds().left < -20.0f) //enemy->getBounds().left < 0.0f will delete when collision with window -50
 		{
 			//Delete bullet
 			delete this->enemies.at(counter);
@@ -1034,7 +1033,7 @@ void Game::updateEnemies()
 		enemy_01S->update_01S();
 
 		//Bullet culling (top of screen)
-		if (enemy_01S->getBounds_01S().left < -50.0f) //enemy->getBounds().left < 0.0f will delete when collision with window
+		if (enemy_01S->getBounds_01S().left < -20.0f) //enemy->getBounds().left < 0.0f will delete when collision with window -50
 		{
 			//Delete bullet
 			delete this->enemies_01S.at(counter_01S);
