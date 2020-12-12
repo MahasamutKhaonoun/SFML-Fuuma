@@ -67,14 +67,34 @@ void Game::initGUI()
 	this->ItemBar.scale(1.8f, 2.f);
 	this->ItemBar.setPosition(280.f, 830.f);
 }
-void Game::initWorld()
+void Game::initBGMenu()
 {
-	//World
-	if (!this->worldBackgroundTex.loadFromFile(""))
+	if (!this->backgroundMainMenuTex.loadFromFile("Screen/MainMenu.png"))
 	{
 		std::cout << "ERROR::GAME::Could not load background texture" << "\n";
 	}
-	this->worldBackground.setTexture(this->worldBackgroundTex);
+	this->backgroundMainMenu.setTexture(&backgroundMainMenuTex);
+	this->backgroundMainMenu.setSize(sf::Vector2f(1600.0f, 900.0f));
+
+	if (!this->choice_ShipTex.loadFromFile("Player/Vic Viper.png"))
+	{
+		std::cout << "Error::Could not load texture player file." << "\n";
+	}
+	this->choice_Ship.setTexture(this->choice_ShipTex);
+	this->choice_Ship.setScale(3.0f, 3.0f);
+	this->choice_Ship.setPosition(320.0f, 475.0f);
+	
+}
+void Game::initWorld()
+{
+	//World
+	if (!this->worldBackgroundTex.loadFromFile("Screen/Space_Background.jpg"))
+	{
+		std::cout << "ERROR::GAME::Could not load background texture" << "\n";
+	}
+	this->worldBackground.setTexture(&worldBackgroundTex);
+	this->worldBackground.setSize(sf::Vector2f(1600.0f,900.0f));
+	//this->worldBackground.setScale(2.0f, 2.0f);
 	
 }
 void Game::initSystems()
@@ -83,7 +103,8 @@ void Game::initSystems()
 	this->Bullet_Type = 0;
 	this->MovementSpeed = 3.f;
 	this->SP_Points = 0;
-	this->LifeForce_count = 5.0f;
+	this->LifeForce_count = 5;
+	this->choiceMenu = 1.0f;
 }
 void Game::initPlayer()
 {
@@ -105,6 +126,7 @@ Game::Game()
 	this->initWindow();
 	this->initTextures();
 	this->initGUI();
+	this->initBGMenu();
 	this->initWorld();
 	this->initSystems();
 	this->initPlayer();
@@ -121,6 +143,14 @@ Game::~Game()
 	{
 		delete i.second;
 	}
+	for (auto& i : this->textures2)
+	{
+		delete i.second;
+	}
+	for (auto& i : this->textures3)
+	{
+		delete i.second;
+	}
 
 
 	//Delete bullets
@@ -128,9 +158,27 @@ Game::~Game()
 	{
 		delete i;
 	}
+	for (auto* i : this->bullets2)
+	{
+		delete i;
+	}
+	for (auto* i : this->bullets3)
+	{
+		delete i;
+	}
 
 	//delete enemies
 	for (auto* i : this->enemies)
+	{
+		delete i;
+	}
+	for (auto* i : this->enemies_01S)
+	{
+		delete i;
+	}
+
+	//Delete Item
+	for (auto* i : this->Item_SP)
 	{
 		delete i;
 	}
@@ -161,10 +209,80 @@ void Game::updatePollEvents()
 		{
 			this->window->close();
 		}
-		if (e.Event::KeyPressed && e.Event::key.code == sf::Keyboard::Escape)
+		/*if (e.Event::KeyPressed && e.Event::key.code == sf::Keyboard::Escape)
+		{
+			this->window->close();
+		}*/
+		if (e.Event::KeyPressed && e.Event::key.code == sf::Keyboard::Home)
 		{
 			this->window->close();
 		}
+		if (e.Event::KeyPressed && e.Event::key.code == sf::Keyboard::Escape)
+		{
+			this->namePage = 1.0f;
+			this->gameStart = false;
+		}
+		if (this->gameStart == false)
+		{
+			if (e.Event::KeyPressed && e.Event::key.code == sf::Keyboard::Enter)
+			{
+				if (this->choiceMenu == 1) //Start
+				{
+					this->gameStart = true;
+				}
+				if (this->choiceMenu == 2) //LeaderBoard
+				{
+					this->namePage = 2.0f;
+					this->gameStart = false;
+				}
+				if (this->choiceMenu == 3) //Tutorial
+				{
+					this->namePage = 3.0f;
+					this->gameStart = false;
+				}
+				if (this->choiceMenu == 4) // Credit
+				{
+					this->namePage = 4.0f;
+					this->gameStart = false;
+				}								
+			}
+			if (e.Event::KeyPressed && e.Event::key.code == sf::Keyboard::W)
+			{
+
+				this->choiceMenu -= 0.5f;
+				if (this->choiceMenu == 0)
+				{
+					this->choiceMenu = 1;
+				}
+			}
+			if (e.Event::KeyPressed && e.Event::key.code == sf::Keyboard::S)
+			{
+				this->choiceMenu += 0.5f;
+				if (this->choiceMenu >=4)
+				{
+					this->choiceMenu = 4;
+				}
+			}
+		}
+
+		if (this->choiceMenu == 1)
+		{
+			this->choice_Ship.setPosition(320.0f, 475.0f);
+		}
+		if (this->choiceMenu == 2)
+		{
+			this->choice_Ship.setPosition(320.0f, 570.0f);
+		}
+		if (this->choiceMenu == 3)
+		{
+			this->choice_Ship.setPosition(320.0f, 660.0f);
+		}
+		if (this->choiceMenu == 4)
+		{
+
+			this->choice_Ship.setPosition(320.0f, 750.0f);
+		}
+		
 	}
 }
 
@@ -234,11 +352,51 @@ void Game::updateInput()
 		this->option_Pos8 = false;
 	}
 		
-	//Move player Main
-	/*if (sf::Keyboard::isKeyPressed(sf::Keyboard::D) && sf::Keyboard::isKeyPressed(sf::Keyboard::W))
+	//Move player Sub Main
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::A) && sf::Keyboard::isKeyPressed(sf::Keyboard::S))
 	{
-
-	}*/
+		this->option_Pos1 = false; //A
+		this->option_Pos2 = false; //S
+		this->option_Pos3 = false; //D
+		this->option_Pos4 = false; //W
+		this->option_Pos5 = true; //AS
+		this->option_Pos6 = false; //SD
+		this->option_Pos7 = false; //DW
+		this->option_Pos8 = false;// AW
+	}
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::S) && sf::Keyboard::isKeyPressed(sf::Keyboard::D))
+	{
+		this->option_Pos1 = false; //A
+		this->option_Pos2 = false; //S
+		this->option_Pos3 = false; //D
+		this->option_Pos4 = false; //W
+		this->option_Pos5 = false; //AS
+		this->option_Pos6 = true; //SD
+		this->option_Pos7 = false; //DW
+		this->option_Pos8 = false;// AW
+	}
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::D) && sf::Keyboard::isKeyPressed(sf::Keyboard::W))
+	{
+		this->option_Pos1 = false; //A
+		this->option_Pos2 = false; //S
+		this->option_Pos3 = false; //D
+		this->option_Pos4 = false; //W
+		this->option_Pos5 = false; //AS
+		this->option_Pos6 = false; //SD
+		this->option_Pos7 = true; //DW
+		this->option_Pos8 = false; //AW
+	}
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::A) && sf::Keyboard::isKeyPressed(sf::Keyboard::W))
+	{
+		this->option_Pos1 = false; //A
+		this->option_Pos2 = false; //S
+		this->option_Pos3 = false; //D
+		this->option_Pos4 = false; //W
+		this->option_Pos5 = false; //AS
+		this->option_Pos6 = false; //SD
+		this->option_Pos7 = false; //DW
+		this->option_Pos8 = true;  //AW
+	}
 	
 	//Debug
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::P))
@@ -269,9 +427,9 @@ void Game::updateInput()
 		//Normal Bullet
 		if (Bullet_Type == 0)
 		{
-			//this->bullets.push_back(
-			//	new Bullet(this->textures["BULLET"], this->player->getPos().x + this->player->getBounds().width / 2.f, this->player->getPos().y, 1.f, 0.f, 5.f, 25, 0, false)
-			//); //texture, pos_x, pos_y, dir_x, dir_y, movement_speed, Bullet_Pos, type, Missile_ON
+			this->bullets.push_back(
+				new Bullet(this->textures["BULLET"], this->player->getPos().x + this->player->getBounds().width / 2.f, this->player->getPos().y, 1.f, 0.f, 5.f, 25, 0, false)
+			); //texture, pos_x, pos_y, dir_x, dir_y, movement_speed, Bullet_Pos, type, Missile_ON
 		if (this->checkOption_1 == true)
 		{
 			if (this->option_Pos1 == true) // ขวา
@@ -306,6 +464,31 @@ void Game::updateInput()
 				); //texture, pos_x, pos_y, dir_x, dir_y, movement_speed, Bullet_Pos, type, Missile_ON
 
 			}
+			if (this->option_Pos5 == true) // ขวาบน
+			{
+				this->bullets.push_back(
+					new Bullet(this->textures["BULLET"], this->player->getPos().x + this->player->getBounds().width / 2.f + 70.0f, this->player->getPos().y - 70.0f, 1.f, 0.f, 5.f, 25, 0, false)
+				); //texture, pos_x, pos_y, dir_x, dir_y, movement_speed, Bullet_Pos, type, Missile_ON
+			}
+			if (this->option_Pos6 == true) // :ซ้ายบน
+			{
+				this->bullets.push_back(
+					new Bullet(this->textures["BULLET"], this->player->getPos().x + this->player->getBounds().width / 2.f - 150.0f, this->player->getPos().y - 70.0f, 1.f, 0.f, 5.f, 25, 0, false)
+				); //texture, pos_x, pos_y, dir_x, dir_y, movement_speed, Bullet_Pos, type, Missile_ON
+			}
+			if (this->option_Pos7 == true) // :ซ้ายล่าง
+			{
+				this->bullets.push_back(
+					new Bullet(this->textures["BULLET"], this->player->getPos().x + this->player->getBounds().width / 2.f - 150.0f, this->player->getPos().y + 50.0f, 1.f, 0.f, 5.f, 25, 0, false)
+				); //texture, pos_x, pos_y, dir_x, dir_y, movement_speed, Bullet_Pos, type, Missile_ON
+			}
+			if (this->option_Pos8 == true) // :ขวาล่าง
+			{
+				this->bullets.push_back(
+					new Bullet(this->textures["BULLET"], this->player->getPos().x + this->player->getBounds().width / 2.f + 70.0f, this->player->getPos().y + 50.0f, 1.f, 0.f, 5.f, 25, 0, false)
+				); //texture, pos_x, pos_y, dir_x, dir_y, movement_speed, Bullet_Pos, type, Missile_ON
+			}
+
 		}
 			
 		}
@@ -325,6 +508,67 @@ void Game::updateInput()
 				this->bullets3.push_back(
 					new Bullet(this->textures["BULLET"], this->player->getPos().x + this->player->getBounds().width / 2.f, this->player->getPos().y, 1.f, 0.f, 5.f, 25, 1, false)
 				); //texture, pos_x, pos_y, dir_x, dir_y, movement_speed, Bullet_Pos, type, Missile_ON
+
+				if (this->checkOption_1 == true)
+				{
+					if (this->option_Pos1 == true) // ขวา
+					{
+
+						this->bullets.push_back(
+							new Bullet(this->textures["BULLET"], this->player->getPos().x + this->player->getBounds().width / 2.f + 70.0f, this->player->getPos().y - 10.0f, 1.f, 0.f, 5.f, 25, 0, false)
+						); //texture, pos_x, pos_y, dir_x, dir_y, movement_speed, Bullet_Pos, type, Missile_ON
+
+					}
+					if (this->option_Pos2 == true) //บน
+					{
+
+						this->bullets.push_back(
+							new Bullet(this->textures["BULLET"], this->player->getPos().x + this->player->getBounds().width / 2.f - 50.0f, this->player->getPos().y - 90.0f, 1.f, 0.f, 5.f, 25, 0, false)
+						); //texture, pos_x, pos_y, dir_x, dir_y, movement_speed, Bullet_Pos, type, Missile_ON
+
+					}
+					if (this->option_Pos3 == true) //ซ้าย
+					{
+
+						this->bullets.push_back(
+							new Bullet(this->textures["BULLET"], this->player->getPos().x + this->player->getBounds().width / 2.f - 180.0f, this->player->getPos().y - 10.0f, 1.f, 0.f, 5.f, 25, 0, false)
+						); //texture, pos_x, pos_y, dir_x, dir_y, movement_speed, Bullet_Pos, type, Missile_ON
+
+					}
+					if (this->option_Pos4 == true) //ล่าง
+					{
+
+						this->bullets.push_back(
+							new Bullet(this->textures["BULLET"], this->player->getPos().x + this->player->getBounds().width / 2.f - 50.0f, this->player->getPos().y + 70.0f, 1.f, 0.f, 5.f, 25, 0, false)
+						); //texture, pos_x, pos_y, dir_x, dir_y, movement_speed, Bullet_Pos, type, Missile_ON
+
+					}
+					if (this->option_Pos5 == true) // ขวาบน
+					{
+						this->bullets.push_back(
+							new Bullet(this->textures["BULLET"], this->player->getPos().x + this->player->getBounds().width / 2.f + 70.0f, this->player->getPos().y - 70.0f, 1.f, 0.f, 5.f, 25, 0, false)
+						); //texture, pos_x, pos_y, dir_x, dir_y, movement_speed, Bullet_Pos, type, Missile_ON
+					}
+					if (this->option_Pos6 == true) // :ซ้ายบน
+					{
+						this->bullets.push_back(
+							new Bullet(this->textures["BULLET"], this->player->getPos().x + this->player->getBounds().width / 2.f - 150.0f, this->player->getPos().y - 70.0f, 1.f, 0.f, 5.f, 25, 0, false)
+						); //texture, pos_x, pos_y, dir_x, dir_y, movement_speed, Bullet_Pos, type, Missile_ON
+					}
+					if (this->option_Pos7 == true) // :ซ้ายล่าง
+					{
+						this->bullets.push_back(
+							new Bullet(this->textures["BULLET"], this->player->getPos().x + this->player->getBounds().width / 2.f - 150.0f, this->player->getPos().y + 50.0f, 1.f, 0.f, 5.f, 25, 0, false)
+						); //texture, pos_x, pos_y, dir_x, dir_y, movement_speed, Bullet_Pos, type, Missile_ON
+					}
+					if (this->option_Pos8 == true) // :ขวาล่าง
+					{
+						this->bullets.push_back(
+							new Bullet(this->textures["BULLET"], this->player->getPos().x + this->player->getBounds().width / 2.f + 70.0f, this->player->getPos().y + 50.0f, 1.f, 0.f, 5.f, 25, 0, false)
+						); //texture, pos_x, pos_y, dir_x, dir_y, movement_speed, Bullet_Pos, type, Missile_ON
+					}
+
+				}
 			}
 			else
 			{
@@ -335,6 +579,67 @@ void Game::updateInput()
 				this->bullets2.push_back(
 					new Bullet(this->textures["BULLET"], this->player->getPos().x + this->player->getBounds().width / 2.f, this->player->getPos().y, 1.f, 0.f, 5.f, 25, 9, true)
 				); //texture, pos_x, pos_y, dir_x, dir_y, movement_speed, Bullet_Pos, type, Missile_ON
+
+				if (this->checkOption_1 == true)
+				{
+					if (this->option_Pos1 == true) // ขวา
+					{
+
+						this->bullets.push_back(
+							new Bullet(this->textures["BULLET"], this->player->getPos().x + this->player->getBounds().width / 2.f + 70.0f, this->player->getPos().y - 10.0f, 1.f, 0.f, 5.f, 25, 0, false)
+						); //texture, pos_x, pos_y, dir_x, dir_y, movement_speed, Bullet_Pos, type, Missile_ON
+
+					}
+					if (this->option_Pos2 == true) //บน
+					{
+
+						this->bullets.push_back(
+							new Bullet(this->textures["BULLET"], this->player->getPos().x + this->player->getBounds().width / 2.f - 50.0f, this->player->getPos().y - 90.0f, 1.f, 0.f, 5.f, 25, 0, false)
+						); //texture, pos_x, pos_y, dir_x, dir_y, movement_speed, Bullet_Pos, type, Missile_ON
+
+					}
+					if (this->option_Pos3 == true) //ซ้าย
+					{
+
+						this->bullets.push_back(
+							new Bullet(this->textures["BULLET"], this->player->getPos().x + this->player->getBounds().width / 2.f - 180.0f, this->player->getPos().y - 10.0f, 1.f, 0.f, 5.f, 25, 0, false)
+						); //texture, pos_x, pos_y, dir_x, dir_y, movement_speed, Bullet_Pos, type, Missile_ON
+
+					}
+					if (this->option_Pos4 == true) //ล่าง
+					{
+
+						this->bullets.push_back(
+							new Bullet(this->textures["BULLET"], this->player->getPos().x + this->player->getBounds().width / 2.f - 50.0f, this->player->getPos().y + 70.0f, 1.f, 0.f, 5.f, 25, 0, false)
+						); //texture, pos_x, pos_y, dir_x, dir_y, movement_speed, Bullet_Pos, type, Missile_ON
+
+					}
+					if (this->option_Pos5 == true) // ขวาบน
+					{
+						this->bullets.push_back(
+							new Bullet(this->textures["BULLET"], this->player->getPos().x + this->player->getBounds().width / 2.f + 70.0f, this->player->getPos().y - 70.0f, 1.f, 0.f, 5.f, 25, 0, false)
+						); //texture, pos_x, pos_y, dir_x, dir_y, movement_speed, Bullet_Pos, type, Missile_ON
+					}
+					if (this->option_Pos6 == true) // :ซ้ายบน
+					{
+						this->bullets.push_back(
+							new Bullet(this->textures["BULLET"], this->player->getPos().x + this->player->getBounds().width / 2.f - 150.0f, this->player->getPos().y - 70.0f, 1.f, 0.f, 5.f, 25, 0, false)
+						); //texture, pos_x, pos_y, dir_x, dir_y, movement_speed, Bullet_Pos, type, Missile_ON
+					}
+					if (this->option_Pos7 == true) // :ซ้ายล่าง
+					{
+						this->bullets.push_back(
+							new Bullet(this->textures["BULLET"], this->player->getPos().x + this->player->getBounds().width / 2.f - 150.0f, this->player->getPos().y + 50.0f, 1.f, 0.f, 5.f, 25, 0, false)
+						); //texture, pos_x, pos_y, dir_x, dir_y, movement_speed, Bullet_Pos, type, Missile_ON
+					}
+					if (this->option_Pos8 == true) // :ขวาล่าง
+					{
+						this->bullets.push_back(
+							new Bullet(this->textures["BULLET"], this->player->getPos().x + this->player->getBounds().width / 2.f + 70.0f, this->player->getPos().y + 50.0f, 1.f, 0.f, 5.f, 25, 0, false)
+						); //texture, pos_x, pos_y, dir_x, dir_y, movement_speed, Bullet_Pos, type, Missile_ON
+					}
+
+				}
 			}
 			
 		}
@@ -354,6 +659,67 @@ void Game::updateInput()
 				this->bullets3.push_back(
 					new Bullet(this->textures["BULLET"], this->player->getPos().x + this->player->getBounds().width / 2.f, this->player->getPos().y, 1.f, 0.f, 5.f, 25, 1, false)
 				); //texture, pos_x, pos_y, dir_x, dir_y, movement_speed, Bullet_Pos, type, Missile_ON
+
+				if (this->checkOption_1 == true)
+				{
+					if (this->option_Pos1 == true) // ขวา
+					{
+
+						this->bullets.push_back(
+							new Bullet(this->textures["BULLET"], this->player->getPos().x + this->player->getBounds().width / 2.f + 70.0f, this->player->getPos().y - 10.0f, 1.f, 0.f, 5.f, 25, 0, false)
+						); //texture, pos_x, pos_y, dir_x, dir_y, movement_speed, Bullet_Pos, type, Missile_ON
+
+					}
+					if (this->option_Pos2 == true) //บน
+					{
+
+						this->bullets.push_back(
+							new Bullet(this->textures["BULLET"], this->player->getPos().x + this->player->getBounds().width / 2.f - 50.0f, this->player->getPos().y - 90.0f, 1.f, 0.f, 5.f, 25, 0, false)
+						); //texture, pos_x, pos_y, dir_x, dir_y, movement_speed, Bullet_Pos, type, Missile_ON
+
+					}
+					if (this->option_Pos3 == true) //ซ้าย
+					{
+
+						this->bullets.push_back(
+							new Bullet(this->textures["BULLET"], this->player->getPos().x + this->player->getBounds().width / 2.f - 180.0f, this->player->getPos().y - 10.0f, 1.f, 0.f, 5.f, 25, 0, false)
+						); //texture, pos_x, pos_y, dir_x, dir_y, movement_speed, Bullet_Pos, type, Missile_ON
+
+					}
+					if (this->option_Pos4 == true) //ล่าง
+					{
+
+						this->bullets.push_back(
+							new Bullet(this->textures["BULLET"], this->player->getPos().x + this->player->getBounds().width / 2.f - 50.0f, this->player->getPos().y + 70.0f, 1.f, 0.f, 5.f, 25, 0, false)
+						); //texture, pos_x, pos_y, dir_x, dir_y, movement_speed, Bullet_Pos, type, Missile_ON
+
+					}
+					if (this->option_Pos5 == true) // ขวาบน
+					{
+						this->bullets.push_back(
+							new Bullet(this->textures["BULLET"], this->player->getPos().x + this->player->getBounds().width / 2.f + 70.0f, this->player->getPos().y - 70.0f, 1.f, 0.f, 5.f, 25, 0, false)
+						); //texture, pos_x, pos_y, dir_x, dir_y, movement_speed, Bullet_Pos, type, Missile_ON
+					}
+					if (this->option_Pos6 == true) // :ซ้ายบน
+					{
+						this->bullets.push_back(
+							new Bullet(this->textures["BULLET"], this->player->getPos().x + this->player->getBounds().width / 2.f - 150.0f, this->player->getPos().y - 70.0f, 1.f, 0.f, 5.f, 25, 0, false)
+						); //texture, pos_x, pos_y, dir_x, dir_y, movement_speed, Bullet_Pos, type, Missile_ON
+					}
+					if (this->option_Pos7 == true) // :ซ้ายล่าง
+					{
+						this->bullets.push_back(
+							new Bullet(this->textures["BULLET"], this->player->getPos().x + this->player->getBounds().width / 2.f - 150.0f, this->player->getPos().y + 50.0f, 1.f, 0.f, 5.f, 25, 0, false)
+						); //texture, pos_x, pos_y, dir_x, dir_y, movement_speed, Bullet_Pos, type, Missile_ON
+					}
+					if (this->option_Pos8 == true) // :ขวาล่าง
+					{
+						this->bullets.push_back(
+							new Bullet(this->textures["BULLET"], this->player->getPos().x + this->player->getBounds().width / 2.f + 70.0f, this->player->getPos().y + 50.0f, 1.f, 0.f, 5.f, 25, 0, false)
+						); //texture, pos_x, pos_y, dir_x, dir_y, movement_speed, Bullet_Pos, type, Missile_ON
+					}
+
+				}
 			}
 			else 
 			{
@@ -364,6 +730,66 @@ void Game::updateInput()
 				this->bullets3.push_back(
 					new Bullet(this->textures["BULLET"], this->player->getPos().x + this->player->getBounds().width / 2.f, this->player->getPos().y, 1.f, 0.f, 5.f, 25, 1, false)
 				); //texture, pos_x, pos_y, dir_x, dir_y, movement_speed, Bullet_Pos, type, Missile_ON
+				if (this->checkOption_1 == true)
+				{
+					if (this->option_Pos1 == true) // ขวา
+					{
+
+						this->bullets.push_back(
+							new Bullet(this->textures["BULLET"], this->player->getPos().x + this->player->getBounds().width / 2.f + 70.0f, this->player->getPos().y - 10.0f, 1.f, 0.f, 5.f, 25, 0, false)
+						); //texture, pos_x, pos_y, dir_x, dir_y, movement_speed, Bullet_Pos, type, Missile_ON
+
+					}
+					if (this->option_Pos2 == true) //บน
+					{
+
+						this->bullets.push_back(
+							new Bullet(this->textures["BULLET"], this->player->getPos().x + this->player->getBounds().width / 2.f - 50.0f, this->player->getPos().y - 90.0f, 1.f, 0.f, 5.f, 25, 0, false)
+						); //texture, pos_x, pos_y, dir_x, dir_y, movement_speed, Bullet_Pos, type, Missile_ON
+
+					}
+					if (this->option_Pos3 == true) //ซ้าย
+					{
+
+						this->bullets.push_back(
+							new Bullet(this->textures["BULLET"], this->player->getPos().x + this->player->getBounds().width / 2.f - 180.0f, this->player->getPos().y - 10.0f, 1.f, 0.f, 5.f, 25, 0, false)
+						); //texture, pos_x, pos_y, dir_x, dir_y, movement_speed, Bullet_Pos, type, Missile_ON
+
+					}
+					if (this->option_Pos4 == true) //ล่าง
+					{
+
+						this->bullets.push_back(
+							new Bullet(this->textures["BULLET"], this->player->getPos().x + this->player->getBounds().width / 2.f - 50.0f, this->player->getPos().y + 70.0f, 1.f, 0.f, 5.f, 25, 0, false)
+						); //texture, pos_x, pos_y, dir_x, dir_y, movement_speed, Bullet_Pos, type, Missile_ON
+
+					}
+					if (this->option_Pos5 == true) // ขวาบน
+					{
+						this->bullets.push_back(
+							new Bullet(this->textures["BULLET"], this->player->getPos().x + this->player->getBounds().width / 2.f + 70.0f, this->player->getPos().y - 70.0f, 1.f, 0.f, 5.f, 25, 0, false)
+						); //texture, pos_x, pos_y, dir_x, dir_y, movement_speed, Bullet_Pos, type, Missile_ON
+					}
+					if (this->option_Pos6 == true) // :ซ้ายบน
+					{
+						this->bullets.push_back(
+							new Bullet(this->textures["BULLET"], this->player->getPos().x + this->player->getBounds().width / 2.f - 150.0f, this->player->getPos().y - 70.0f, 1.f, 0.f, 5.f, 25, 0, false)
+						); //texture, pos_x, pos_y, dir_x, dir_y, movement_speed, Bullet_Pos, type, Missile_ON
+					}
+					if (this->option_Pos7 == true) // :ซ้ายล่าง
+					{
+						this->bullets.push_back(
+							new Bullet(this->textures["BULLET"], this->player->getPos().x + this->player->getBounds().width / 2.f - 150.0f, this->player->getPos().y + 50.0f, 1.f, 0.f, 5.f, 25, 0, false)
+						); //texture, pos_x, pos_y, dir_x, dir_y, movement_speed, Bullet_Pos, type, Missile_ON
+					}
+					if (this->option_Pos8 == true) // :ขวาล่าง
+					{
+						this->bullets.push_back(
+							new Bullet(this->textures["BULLET"], this->player->getPos().x + this->player->getBounds().width / 2.f + 70.0f, this->player->getPos().y + 50.0f, 1.f, 0.f, 5.f, 25, 0, false)
+						); //texture, pos_x, pos_y, dir_x, dir_y, movement_speed, Bullet_Pos, type, Missile_ON
+					}
+
+				}
 			}
 		}
 		//Ripple Bullet
@@ -372,6 +798,65 @@ void Game::updateInput()
 			this->bullets.push_back(
 				new Bullet(this->textures2["BULLET"], this->player->getPos().x + this->player->getBounds().width / 2.f, this->player->getPos().y, 1.f, 0.f, 5.f, -20, 0, false)
 			); //texture, pos_x, pos_y, dir_x, dir_y, movement_speed, Bullet_Pos, type, Missile_ON
+			if (this->checkOption_1 == true)
+			{
+				if (this->option_Pos1 == true) // ขวา
+				{
+
+					this->bullets.push_back(
+						new Bullet(this->textures2["BULLET"], this->player->getPos().x + this->player->getBounds().width / 2.f + 70.0f, this->player->getPos().y - 10.0f, 1.f, 0.f, 5.f, -20, 0, false)
+					); //texture, pos_x, pos_y, dir_x, dir_y, movement_speed, Bullet_Pos, type, Missile_ON
+
+				}
+				if (this->option_Pos2 == true) //บน
+				{
+
+					this->bullets.push_back(
+						new Bullet(this->textures2["BULLET"], this->player->getPos().x + this->player->getBounds().width / 2.f - 50.0f, this->player->getPos().y - 90.0f, 1.f, 0.f, 5.f, -20, 0, false)
+					); //texture, pos_x, pos_y, dir_x, dir_y, movement_speed, Bullet_Pos, type, Missile_ON
+
+				}
+				if (this->option_Pos3 == true) //ซ้าย
+				{
+
+					this->bullets.push_back(
+						new Bullet(this->textures2["BULLET"], this->player->getPos().x + this->player->getBounds().width / 2.f - 180.0f, this->player->getPos().y - 10.0f, 1.f, 0.f, 5.f, -20, 0, false)
+					); //texture, pos_x, pos_y, dir_x, dir_y, movement_speed, Bullet_Pos, type, Missile_ON
+
+				}
+				if (this->option_Pos4 == true) //ล่าง
+				{
+
+					this->bullets.push_back(
+						new Bullet(this->textures2["BULLET"], this->player->getPos().x + this->player->getBounds().width / 2.f - 50.0f, this->player->getPos().y + 70.0f, 1.f, 0.f, 5.f, -20, 0, false)
+					); //texture, pos_x, pos_y, dir_x, dir_y, movement_speed, Bullet_Pos, type, Missile_ON
+
+				}
+				if (this->option_Pos5 == true) // ขวาบน
+				{
+					this->bullets.push_back(
+						new Bullet(this->textures2["BULLET"], this->player->getPos().x + this->player->getBounds().width / 2.f + 70.0f, this->player->getPos().y - 70.0f, 1.f, 0.f, 5.f, -20, 0, false)
+					); //texture, pos_x, pos_y, dir_x, dir_y, movement_speed, Bullet_Pos, type, Missile_ON
+				}
+				if (this->option_Pos6 == true) // :ซ้ายบน
+				{
+					this->bullets.push_back(
+						new Bullet(this->textures2["BULLET"], this->player->getPos().x + this->player->getBounds().width / 2.f - 150.0f, this->player->getPos().y - 70.0f, 1.f, 0.f, 5.f, -20, 0, false)
+					); //texture, pos_x, pos_y, dir_x, dir_y, movement_speed, Bullet_Pos, type, Missile_ON
+				}
+				if (this->option_Pos7 == true) // :ซ้ายล่าง
+				{
+					this->bullets.push_back(
+						new Bullet(this->textures2["BULLET"], this->player->getPos().x + this->player->getBounds().width / 2.f - 150.0f, this->player->getPos().y + 50.0f, 1.f, 0.f, 5.f, -20, 0, false)
+					); //texture, pos_x, pos_y, dir_x, dir_y, movement_speed, Bullet_Pos, type, Missile_ON
+				}
+				if (this->option_Pos8 == true) // :ขวาล่าง
+				{
+					this->bullets.push_back(
+						new Bullet(this->textures2["BULLET"], this->player->getPos().x + this->player->getBounds().width / 2.f + 70.0f, this->player->getPos().y + 50.0f, 1.f, 0.f, 5.f, -20, 0, false)
+					); //texture, pos_x, pos_y, dir_x, dir_y, movement_speed, Bullet_Pos, type, Missile_ON
+				}
+			}
 		}
 		
 	}
@@ -441,13 +926,13 @@ void Game::updateBullets()
 		bullet->update();
 	
 		//Bullet culling (top of screen)
-		if (bullet->getBounds().left > 1600.0f)
+		if (bullet->getBounds().left > 1570.0f)
 		{
 			//Delete bullet
 			delete this->bullets.at(counter);
 			this->bullets.erase(this->bullets.begin() + counter);
-
 		}
+		
 
 		++counter;
 	}
@@ -458,7 +943,7 @@ void Game::updateBullets()
 		bullet2->update();
 
 		//Bullet culling (top of screen)
-		if (bullet2->getBounds().left > 3000.0f)
+		if (bullet2->getBounds().left > 2800.0f)
 		{
 			//Delete bullet
 			delete this->bullets2.at(counter_Missile);
@@ -474,7 +959,7 @@ void Game::updateBullets()
 		bullet3->update();
 
 		//Bullet culling (top of screen)
-		if (bullet3->getBounds().left > 1600.0f)
+		if (bullet3->getBounds().left > 1570.0f)
 		{
 			//Delete bullet
 			delete this->bullets3.at(counter_Double);
@@ -809,28 +1294,36 @@ void Game::updateOption()
 
 void Game::update()
 {
+	if (this->gameStart == true)
+	{
+		this->updateInput();
 
-	this->updateInput();
+		this->player->update();
 
-	this->player->update();
+		this->updateCollision();
 
-	this->updateCollision();
+		this->updateBullets();
 
-	this->updateBullets();
+		this->updateEnemies();
 
-	this->updateEnemies();
+		this->updateCombat();
 
-	this->updateCombat();
+		this->updateItem();
+
+		this->updateOption();
+
+		this->renderGUI();
+
+		this->updateWorld();
+
+		this->updateGUI();
+	}
 	
-	this->updateItem();
 
-	this->updateOption();
+}
 
-	this->renderGUI();
-
-	this->updateWorld();
-
-	this->updateGUI();
+void Game::renderMenu()
+{
 
 }
 
@@ -855,54 +1348,75 @@ void Game::render()
 {
 	this->window->clear();
 
-	//Game Over screen
-	if (this->player->getHp() <= 0)
+	if (this->gameStart == false)
 	{
+		if (this->namePage == 1)
+		{
+			this->window->draw(this->backgroundMainMenu);
+			this->window->draw(this->choice_Ship);;
+		}
+		if (this->namePage == 2)
+		{
+			this->window->draw(this->worldBackground);
+		}
+		if (this->namePage == 3)
+		{
+			this->window->draw(this->worldBackground);
+		}
+		if (this->namePage == 4)
+		{
+			this->window->draw(this->worldBackground);
+		}
 		
-		this->player->alreadyDead(true, posX, posY);
-		this->window->draw(this->gameOverText);
-		//printf("SP : %d", SP_Points);
 	}
-
-	//Draw world
-	this->renderWorld();
-
-
-	//Draw all the stuffs
-	this->player->render(*this->window);
-
-	for (auto* bullet : this->bullets)
+	else
 	{
-		bullet->render(this->window);
+		//Draw world
+		this->renderWorld();
+		//Game Over screen
+		if (this->player->getHp() <= 0)
+		{
+			this->player->alreadyDead(true, posX, posY);
+			this->window->draw(this->gameOverText);
+			//printf("SP : %d", SP_Points);
+		}
+		//Draw all the stuffs
+		this->player->render(*this->window);
+
+		for (auto* bullet : this->bullets)
+		{
+			bullet->render(this->window);
+		}
+
+		for (auto* bullet2 : this->bullets2)
+		{
+			bullet2->render(this->window);
+		}
+
+		for (auto* bullet3 : this->bullets3)
+		{
+			bullet3->render(this->window);
+		}
+
+		for (auto* enemy : this->enemies)
+		{
+			enemy->render(this->window);
+		}
+
+		for (auto* enemy_01S : this->enemies_01S)
+		{
+			enemy_01S->render(this->window);
+		}
+
+		for (auto* ItemSP : this->Item_SP)
+		{
+			ItemSP->render(this->window);
+		}
+
+		this->renderGUI();
 	}
 
-	for (auto* bullet2 : this->bullets2)
-	{
-		bullet2->render(this->window);
-	}
-
-	for (auto* bullet3 : this->bullets3)
-	{
-		bullet3->render(this->window);
-	}
-
-	for (auto* enemy : this->enemies)
-	{
-		enemy->render(this->window);
-	}
-
-	for (auto* enemy_01S : this->enemies_01S)
-	{
-		enemy_01S->render(this->window);
-	}
-
-	for (auto* ItemSP : this->Item_SP)
-	{
-		ItemSP->render(this->window);
-	}
-
-
-	this->renderGUI();
+	
 
 	this->window->display();
 }

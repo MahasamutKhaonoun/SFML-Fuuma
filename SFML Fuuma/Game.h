@@ -3,6 +3,7 @@
 #include<map>
 #include<string>
 #include<sstream>
+#include <vector>
 #include "Player.h"
 #include "Bullet.h"
 #include "Enemy.h"
@@ -19,6 +20,7 @@ private:
 	std::map<std::string, sf::Texture*> textures2;
 	std::map<std::string, sf::Texture*> textures3;
 	std::vector<Bullet*> bullets;
+	std::vector<Bullet*> bullets_Back;
 	std::vector<Bullet*> bullets2;
 	std::vector<Bullet*> bullets3;
 
@@ -31,15 +33,24 @@ private:
 
 	//World
 	sf::Texture worldBackgroundTex;
+	sf::Texture backgroundMainMenuTex;
 	sf::Texture ItemBarTex;
-	sf::Sprite worldBackground;
+	sf::Texture choice_ShipTex;
+	sf::RectangleShape worldBackground;
+	sf::RectangleShape backgroundMainMenu;
 	sf::Sprite ItemBar;
+	sf::Sprite choice_Ship;
 
 	//Systems
+	bool gameStart = false;
+	float choiceMenu = 1.0f;
+	float namePage = 1.0f;
+	bool checkchoiceTime;
 	unsigned points;
 	int SP_Points;
 	int Bullet_Type;
 	int LifeForce_count;
+	
 	float MovementSpeed;
 	float posX;
 	float posY;
@@ -80,6 +91,7 @@ private:
 	void initWindow();
 	void initTextures();
 	void initGUI();
+	void initBGMenu();
 	void initWorld();
 	void initSystems();
 	void initPlayer();
@@ -103,6 +115,7 @@ public:
 	void updateItem();
 	void updateOption();
 	void update();
+	void renderMenu();
 	void renderGUI();
 	void renderWorld();
 	void render();
