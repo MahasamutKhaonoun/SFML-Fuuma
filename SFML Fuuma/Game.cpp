@@ -116,7 +116,7 @@ void Game::initSystems()
 	this->LifeForce_count = 5;
 	this->choiceMenu = 1.0f;
 	this->framePower_count = 0;
-	this->worldBackground_left = -1600.0f;
+	
 }
 void Game::initPlayer()
 {
@@ -428,8 +428,7 @@ void Game::updateInput()
 		this->SP_Points = 6;
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::M))
 	{
-		this->player->openOption_1(true, this->player->getPos().x + this->player->getBounds().width / 2.f - 130.0f, this->player->getPos().y + 80.0f);
-		this->checkOption_1 = true;
+		
 	}
 		
 	
@@ -986,7 +985,7 @@ void Game::updateEnemies()
 {
 	/////////////////////////////////////////////////-ENEMIES_01-////////////////////////////////////////////////////////
 	//Spawning
-	this->spawnTimer += 0.5f; // 2.0 กำลังดี
+	this->spawnTimer += 0.7f + this->multiSpawn; // 2.0 กำลังดี
 	if (this->spawnTimer >= this->spawnTimerMax)
 	{
 		this->enemies.push_back(new Enemy(this->window->getSize().x - 20.f, rand() % this->window->getSize().y,1 ));
@@ -1085,7 +1084,7 @@ void Game::updateCombat()
 		{
 			if (this->enemies[i]->getBounds().intersects(this->bullets[k]->getBounds()))
 			{
-				this->points += this->enemies[i]->getPoints();
+				this->points += this->enemies[i]->getPoints() * this->multiScore;
 				delete this->enemies[i];
 				this->enemies.erase(this->enemies.begin() + i);
 
@@ -1103,7 +1102,7 @@ void Game::updateCombat()
 		{
 			if (this->enemies[i]->getBounds().intersects(this->bullets2[k]->getBounds3()))
 			{
-				this->points += this->enemies[i]->getPoints();
+				this->points += this->enemies[i]->getPoints() * this->multiScore;
 				delete this->enemies[i];
 				this->enemies.erase(this->enemies.begin() + i);
 
@@ -1122,7 +1121,7 @@ void Game::updateCombat()
 		{
 			if (this->enemies[i]->getBounds().intersects(this->bullets3[k]->getBounds2()))
 			{
-				this->points += this->enemies[i]->getPoints();
+				this->points += this->enemies[i]->getPoints() * this->multiScore;
 				delete this->enemies[i];
 				this->enemies.erase(this->enemies.begin() + i);
 
@@ -1140,7 +1139,7 @@ void Game::updateCombat()
 		{
 			if (this->enemies_01S[i]->getBounds_01S().intersects(this->bullets[k]->getBounds()))
 			{
-				this->points += this->enemies_01S[i]->getPoints();
+				this->points += this->enemies_01S[i]->getPoints() * this->multiScore;
 
 				delete this->enemies_01S[i];
 				this->enemies_01S.erase(this->enemies_01S.begin() + i);
@@ -1162,7 +1161,7 @@ void Game::updateCombat()
 		{
 			if (this->enemies_01S[i]->getBounds_01S().intersects(this->bullets2[k]->getBounds3()))
 			{
-				this->points += this->enemies_01S[i]->getPoints();
+				this->points += this->enemies_01S[i]->getPoints() * this->multiScore;
 
 				delete this->enemies_01S[i];
 				this->enemies_01S.erase(this->enemies_01S.begin() + i);
@@ -1185,7 +1184,7 @@ void Game::updateCombat()
 		{
 			if (this->enemies_01S[i]->getBounds_01S().intersects(this->bullets3[k]->getBounds2()))
 			{
-				this->points += this->enemies_01S[i]->getPoints();
+				this->points += this->enemies_01S[i]->getPoints() * this->multiScore;
 
 				delete this->enemies_01S[i];
 				this->enemies_01S.erase(this->enemies_01S.begin() + i);
@@ -1233,6 +1232,7 @@ void Game::updateItem()
 					}
 					delete this->Item_SP.at(counter_Item);
 					this->Item_SP.erase(this->Item_SP.begin() + counter_Item);
+					this->checkTimemultiSpawn = true;
 					getPoint = false;
 				}
 				
@@ -1285,7 +1285,8 @@ void Game::updateOption()
 
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::U)) 
 	{
-		if (SP_Points == 1)
+		
+		if (SP_Points == 1) // speed up
 		{
 			if (checkSpeed == true)
 			{
@@ -1296,32 +1297,73 @@ void Game::updateOption()
 				SP_Points = 0;
 				checkSpeed = false;
 			}
+			this->multiScore += 0.01f;
+			if (this->checkTimemultiSpawn == true)
+			{
+				this->multiSpawn += 0.5f;
+				this->checkTimemultiSpawn = false;
+			}
 		}
-		else if (SP_Points == 2)
+		else if (SP_Points == 2) // missile
 		{
 			Bullet_Type = 1;
 			this->checkMissile_On = true;
 			SP_Points = 0;
+			this->multiScore += 0.2f;
+			if (this->checkTimemultiSpawn == true)
+			{
+				this->multiSpawn += 0.7f;
+				this->checkTimemultiSpawn = false;
+			}
 		}
-		else if (SP_Points == 3)
+		else if (SP_Points == 3) //Double
 		{
 			Bullet_Type = 2;
 			this->checkDouble_On = true;
 			SP_Points = 0;
+			this->multiScore += 0.2f;
+			if (this->checkTimemultiSpawn == true)
+			{
+				this->multiSpawn += 0.7f;
+				this->checkTimemultiSpawn = false;
+			}
 		}
-		else if (SP_Points == 4)
+		else if (SP_Points == 4) //Laser
 		{
 			Bullet_Type = 3;
 			this->checkMissile_On = false;
 			this->checkDouble_On = false;
 			SP_Points = 0;
+			this->multiScore += 0.3f;
+			if (this->checkTimemultiSpawn == true)
+			{
+				this->multiSpawn += 0.8f;
+				this->checkTimemultiSpawn = false;
+			}
 		}
-		else if (SP_Points == 6)
+		else if (SP_Points == 5) // Option
+		{
+			this->player->openOption_1(true, this->player->getPos().x + this->player->getBounds().width / 2.f - 130.0f, this->player->getPos().y + 80.0f);
+			this->checkOption_1 = true;
+			SP_Points = 0;
+			this->multiScore += 0.5f;
+			if (this->checkTimemultiSpawn == true)
+			{
+				this->multiSpawn += 1.0f;
+				this->checkTimemultiSpawn = false;
+			}
+		}
+		else if (SP_Points == 6) //LifeForce
 		{
 			this->player->openLifeForce(true, this->player->getPos().x + this->player->getBounds().width / 2.f, this->player->getPos().y);
 			checkLifeForce_On = true;
 			this->LifeForce_count = 5.0f;
 			SP_Points = 0;
+			if (this->checkTimemultiSpawn == true)
+			{
+				this->multiSpawn += 0.5f;
+				this->checkTimemultiSpawn = false;
+			}
 			printf("%d\n", LifeForce_count);
 		}
 	}
@@ -1380,7 +1422,6 @@ void Game::renderWorld()
 {
 	this->window->draw(this->worldBackground);
 	this->window->draw(this->worldBackground2);
-	this->worldBackground_left = -0.5f;
 	this->worldBackground.move(-0.5f, 0.0f);
 	this->worldBackground2.move(-0.5f, 0.0f);
 	
@@ -1424,15 +1465,9 @@ void Game::render()
 		//Draw world
 		this->renderWorld();
 		//Game Over screen
-		if (this->player->getHp() <= 0)
-		{
-			this->player->alreadyDead(true, posX, posY);
-			this->window->draw(this->gameOverText);
-			//printf("SP : %d", SP_Points);
-		}
+		
 		//Draw all the stuffs
 		this->player->render(*this->window);
-
 		for (auto* bullet : this->bullets)
 		{
 			bullet->render(this->window);
@@ -1504,12 +1539,14 @@ void Game::render()
 		{
 			this->window->draw(framePower);
 		}
-		//this->framePower.setPosition(sf::Vector2f(290.0f, 830.0f)); // speed up
-		//this->framePower.setPosition(sf::Vector2f(490.0f, 830.0f)); // missile
-		//this->framePower.setPosition(sf::Vector2f(695.0f, 830.0f)); // Double
-		//this->framePower.setPosition(sf::Vector2f(900.0f, 830.0f)); // Laser
-		//this->framePower.setPosition(sf::Vector2f(1105.0f, 830.0f)); // Option
-		//this->framePower.setPosition(sf::Vector2f(1305.0f, 830.0f)); // ?
+		if (this->player->getHp() <= 0)
+		{
+			this->player->alreadyDead(true, posX, posY);
+			this->player->render(*this->window);
+			this->window->draw(this->gameOverText);
+		}
+
+		
 	}
 
 	

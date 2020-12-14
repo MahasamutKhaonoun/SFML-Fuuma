@@ -47,7 +47,8 @@ private:
 	bool gameStart = false;
 	float choiceMenu = 1.0f;
 	float namePage = 1.0f;
-	float worldBackground_left;
+	float multiSpawn = 0.0f;
+	float multiScore = 1.0f;
 	bool checkchoiceTime;
 	unsigned points;
 	int SP_Points;
@@ -75,6 +76,7 @@ private:
 	bool option_Pos7 = false;
 	bool option_Pos8 = false;
 	bool drawFrame = true;
+	bool checkTimemultiSpawn = false;
 
 	//Player
 	Player* player;
@@ -89,7 +91,6 @@ private:
 	float spawnTimerMax;
 	float spawnTimer_01S;
 	float spawnTimerMax_01S;
-	float multiSpawn;
 	std::vector<Enemy*> enemies;
 	std::vector<Enemy*> enemies_01S;
 	std::vector<Enemy*> Item_SP;

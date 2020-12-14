@@ -3,7 +3,7 @@
 void Player::initVariables()
 {
 	//this->movementSpeed = 2.f;
-	this->attackCooldownMax = 30.0f;
+	this->attackCooldownMax = 60.0f;
 	this->attackCooldown = this->attackCooldownMax;
 	this->hpMax = 100;
 	this->hp = this->hpMax;
@@ -319,7 +319,6 @@ void Player::updateAttack()
 void Player::update()
 {
 	this->updateAttack();
-
 }
 
 void Player::render(sf::RenderTarget& target)
