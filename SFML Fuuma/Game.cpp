@@ -1249,6 +1249,34 @@ void Game::updateOption()
 		checkLifeForce_On = false;
 		this->player->openLifeForce(false, this->player->getPos().x + this->player->getBounds().width / 2.f, this->player->getPos().y);
 	}
+	if (SP_Points == 0)
+	{
+		this->framePower_count = 0;
+	}
+	else if (SP_Points == 1)
+	{
+		this->framePower_count = 1;
+	}
+	else if (SP_Points == 2)
+	{
+		this->framePower_count = 2;
+	}
+	else if (SP_Points == 3)
+	{
+		this->framePower_count = 3;
+	}
+	else if (SP_Points == 4)
+	{
+		this->framePower_count = 4;
+	}
+	else if (SP_Points == 5)
+	{
+		this->framePower_count = 5;
+	}
+	else if (SP_Points == 6)
+	{
+		this->framePower_count = 6;
+	}
 
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::U)) 
 	{
@@ -1418,36 +1446,46 @@ void Game::render()
 		}
 
 		this->renderGUI();
-		this->window->draw(this->framePower);
-		if (framePower_count = 0)
+		
+		
+		if (framePower_count == 0)
 		{
-
+			this->drawFrame = false;
 		}
-		if (framePower_count = 1)
+		if (framePower_count == 1)
 		{
+			this->drawFrame = true;
 			this->framePower.setPosition(sf::Vector2f(290.0f, 830.0f)); // speed up
 		}
-		if (framePower_count = 2)
+		if (framePower_count == 2)
 		{
+			this->drawFrame = true;
 			this->framePower.setPosition(sf::Vector2f(490.0f, 830.0f)); // missile
 		}
-		if (framePower_count = 3)
+		if (framePower_count == 3)
 		{
+			this->drawFrame = true;
 			this->framePower.setPosition(sf::Vector2f(695.0f, 830.0f)); // Double
 		}
-		if (framePower_count = 4)
+		if (framePower_count == 4)
 		{
+			this->drawFrame = true;
 			this->framePower.setPosition(sf::Vector2f(900.0f, 830.0f)); // Laser
 		}
-		if (framePower_count = 5)
+		if (framePower_count == 5)
 		{
+			this->drawFrame = true;
 			this->framePower.setPosition(sf::Vector2f(1105.0f, 830.0f)); // Option
 		}
-		if (framePower_count = 6)
+		if (framePower_count == 6)
 		{
+			this->drawFrame = true;
 			this->framePower.setPosition(sf::Vector2f(1305.0f, 830.0f)); // ?
 		}
-
+		if (this->drawFrame == true)
+		{
+			this->window->draw(framePower);
+		}
 		//this->framePower.setPosition(sf::Vector2f(290.0f, 830.0f)); // speed up
 		//this->framePower.setPosition(sf::Vector2f(490.0f, 830.0f)); // missile
 		//this->framePower.setPosition(sf::Vector2f(695.0f, 830.0f)); // Double

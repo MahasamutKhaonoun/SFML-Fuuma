@@ -72,6 +72,7 @@ private:
 	bool option_Pos6 = false;
 	bool option_Pos7 = false;
 	bool option_Pos8 = false;
+	bool drawFrame = true;
 
 	//Player
 	Player* player;
