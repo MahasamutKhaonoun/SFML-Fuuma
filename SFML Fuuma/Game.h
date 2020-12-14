@@ -38,6 +38,7 @@ private:
 	sf::Texture choice_ShipTex;
 	sf::RectangleShape worldBackground;
 	sf::RectangleShape backgroundMainMenu;
+	sf::RectangleShape framePower;
 	sf::Sprite ItemBar;
 	sf::Sprite choice_Ship;
 
@@ -50,6 +51,7 @@ private:
 	int SP_Points;
 	int Bullet_Type;
 	int LifeForce_count;
+	int framePower_count;
 	
 	float MovementSpeed;
 	float posX;

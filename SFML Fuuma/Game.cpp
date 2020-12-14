@@ -66,6 +66,12 @@ void Game::initGUI()
 	this->ItemBar.setTexture(this->ItemBarTex);
 	this->ItemBar.scale(1.8f, 2.f);
 	this->ItemBar.setPosition(280.f, 830.f);
+
+	this->framePower.setSize(sf::Vector2f(190.0f, 50.0f));
+	this->framePower.setOutlineThickness(10.f);
+	this->framePower.setOutlineColor(sf::Color(250, 150, 100));
+	this->framePower.setFillColor(sf::Color::Transparent);
+	
 }
 void Game::initBGMenu()
 {
@@ -105,6 +111,7 @@ void Game::initSystems()
 	this->SP_Points = 0;
 	this->LifeForce_count = 5;
 	this->choiceMenu = 1.0f;
+	this->framePower_count = 0;
 }
 void Game::initPlayer()
 {
@@ -1010,9 +1017,7 @@ void Game::updateEnemies()
 				printf("%d\n", LifeForce_count);
 				delete this->enemies.at(counter);
 				this->enemies.erase(this->enemies.begin() + counter);
-				
-			}
-			
+			}			
 		}
 		++counter;
 	}
@@ -1413,6 +1418,42 @@ void Game::render()
 		}
 
 		this->renderGUI();
+		this->window->draw(this->framePower);
+		if (framePower_count = 0)
+		{
+
+		}
+		if (framePower_count = 1)
+		{
+			this->framePower.setPosition(sf::Vector2f(290.0f, 830.0f)); // speed up
+		}
+		if (framePower_count = 2)
+		{
+			this->framePower.setPosition(sf::Vector2f(490.0f, 830.0f)); // missile
+		}
+		if (framePower_count = 3)
+		{
+			this->framePower.setPosition(sf::Vector2f(695.0f, 830.0f)); // Double
+		}
+		if (framePower_count = 4)
+		{
+			this->framePower.setPosition(sf::Vector2f(900.0f, 830.0f)); // Laser
+		}
+		if (framePower_count = 5)
+		{
+			this->framePower.setPosition(sf::Vector2f(1105.0f, 830.0f)); // Option
+		}
+		if (framePower_count = 6)
+		{
+			this->framePower.setPosition(sf::Vector2f(1305.0f, 830.0f)); // ?
+		}
+
+		//this->framePower.setPosition(sf::Vector2f(290.0f, 830.0f)); // speed up
+		//this->framePower.setPosition(sf::Vector2f(490.0f, 830.0f)); // missile
+		//this->framePower.setPosition(sf::Vector2f(695.0f, 830.0f)); // Double
+		//this->framePower.setPosition(sf::Vector2f(900.0f, 830.0f)); // Laser
+		//this->framePower.setPosition(sf::Vector2f(1105.0f, 830.0f)); // Option
+		//this->framePower.setPosition(sf::Vector2f(1305.0f, 830.0f)); // ?
 	}
 
 	
