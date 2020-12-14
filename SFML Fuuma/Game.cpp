@@ -100,6 +100,10 @@ void Game::initWorld()
 	}
 	this->worldBackground.setTexture(&worldBackgroundTex);
 	this->worldBackground.setSize(sf::Vector2f(1600.0f,900.0f));
+	this->worldBackground.setPosition(sf::Vector2f(0.0f, 0.0f));
+	this->worldBackground2.setTexture(&worldBackgroundTex);
+	this->worldBackground2.setSize(sf::Vector2f(1600.0f, 900.0f));
+	this->worldBackground2.setPosition(sf::Vector2f(1600.0f, 0.0f));
 	//this->worldBackground.setScale(2.0f, 2.0f);
 	
 }
@@ -112,6 +116,7 @@ void Game::initSystems()
 	this->LifeForce_count = 5;
 	this->choiceMenu = 1.0f;
 	this->framePower_count = 0;
+	this->worldBackground_left = -1600.0f;
 }
 void Game::initPlayer()
 {
@@ -981,7 +986,7 @@ void Game::updateEnemies()
 {
 	/////////////////////////////////////////////////-ENEMIES_01-////////////////////////////////////////////////////////
 	//Spawning
-	this->spawnTimer += 0.5f;
+	this->spawnTimer += 0.5f; // 2.0 กำลังดี
 	if (this->spawnTimer >= this->spawnTimerMax)
 	{
 		this->enemies.push_back(new Enemy(this->window->getSize().x - 20.f, rand() % this->window->getSize().y,1 ));
@@ -1374,6 +1379,19 @@ void Game::renderGUI()
 void Game::renderWorld()
 {
 	this->window->draw(this->worldBackground);
+	this->window->draw(this->worldBackground2);
+	this->worldBackground_left = -0.5f;
+	this->worldBackground.move(-0.5f, 0.0f);
+	this->worldBackground2.move(-0.5f, 0.0f);
+	
+	if (this->worldBackground.getPosition().x < -1600.0f)
+	{
+		this->worldBackground.setPosition(1600.0f, 0.0f);
+	}
+	if (this->worldBackground2.getPosition().x < -1600.0f)
+	{
+		this->worldBackground2.setPosition(1600.0f, 0.0f);
+	}
 }
 
 void Game::render()

@@ -37,6 +37,7 @@ private:
 	sf::Texture ItemBarTex;
 	sf::Texture choice_ShipTex;
 	sf::RectangleShape worldBackground;
+	sf::RectangleShape worldBackground2;
 	sf::RectangleShape backgroundMainMenu;
 	sf::RectangleShape framePower;
 	sf::Sprite ItemBar;
@@ -46,6 +47,7 @@ private:
 	bool gameStart = false;
 	float choiceMenu = 1.0f;
 	float namePage = 1.0f;
+	float worldBackground_left;
 	bool checkchoiceTime;
 	unsigned points;
 	int SP_Points;
@@ -87,6 +89,7 @@ private:
 	float spawnTimerMax;
 	float spawnTimer_01S;
 	float spawnTimerMax_01S;
+	float multiSpawn;
 	std::vector<Enemy*> enemies;
 	std::vector<Enemy*> enemies_01S;
 	std::vector<Enemy*> Item_SP;
