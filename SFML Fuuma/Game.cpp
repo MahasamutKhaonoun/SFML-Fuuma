@@ -457,6 +457,18 @@ void Game::updatePollEvents()
 		{
 			this->window->close();
 		}
+		if (e.Event::KeyPressed && e.Event::key.code == sf::Keyboard::LShift)
+		{
+			this->namePage = 1.0f;
+			this->gameStart = false;
+			this->clearall();
+			title.play();
+			leaderboard.stop();
+			tutorial.stop();
+			credit.stop();
+			soundtrack.stop();
+			this->canEnter = false;
+		}
 		if (canEnter == false)
 		{
 			if (this->gameStart == false)
@@ -1207,7 +1219,7 @@ void Game::updateCollision()
 	else if (this->player->getBounds().top + this->player->getBounds().height >= this->window->getSize().y - 150.0f)
 	{
 		this->player->setPosition(this->player->getBounds().left, this->window->getSize().y - this->player->getBounds().height - 150.0f );
-		this->player->updateLifeForce(this->player->getBounds().left + 75.0f, this->window->getSize().y - this->player->getBounds().height);
+		this->player->updateLifeForce(this->player->getBounds().left + 75.0f, this->window->getSize().y - this->player->getBounds().height - 150.0f);
 	}
 }
 
