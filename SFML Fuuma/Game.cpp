@@ -75,12 +75,34 @@ void Game::initGUI()
 }
 void Game::initBGMenu()
 {
+	//Main menu
 	if (!this->backgroundMainMenuTex.loadFromFile("Screen/MainMenu.png"))
 	{
 		std::cout << "ERROR::GAME::Could not load background texture" << "\n";
 	}
 	this->backgroundMainMenu.setTexture(&backgroundMainMenuTex);
 	this->backgroundMainMenu.setSize(sf::Vector2f(1600.0f, 900.0f));
+
+	//Leaderboard
+	if (!this->backgroundLeaderboardTex.loadFromFile("Screen/Leaderboard.png"))
+	{
+		std::cout << "ERROR::GAME::Could not load background texture" << "\n";
+	}
+	this->backgroundLeaderboard.setTexture(&backgroundLeaderboardTex);
+	this->backgroundLeaderboard.setSize(sf::Vector2f(1600.0f, 900.0f));
+
+	//Tutorial
+	if (!this->backgroundTutorialTex.loadFromFile("Screen/Tutorial.png"))
+	{
+		std::cout << "ERROR::GAME::Could not load background texture" << "\n";
+	}
+	this->backgroundTutorial.setTexture(&backgroundTutorialTex);
+	this->backgroundTutorial.setSize(sf::Vector2f(1600.0f, 900.0f));
+
+
+
+
+
 
 	if (!this->choice_ShipTex.loadFromFile("Player/Vic Viper.png"))
 	{
@@ -106,6 +128,106 @@ void Game::initWorld()
 	this->worldBackground2.setPosition(sf::Vector2f(1600.0f, 0.0f));
 	//this->worldBackground.setScale(2.0f, 2.0f);
 	
+}
+void Game::initSound()
+{
+	//Title
+	if (!title.openFromFile("Sound/Fuuma title music.ogg"))
+	{
+		std::cout << "ERROR::GAME::Could not load background music" << "\n";
+	}
+	title.play();
+	//title.setVolume(50.0f);
+	title.setLoop(true);
+
+	//Leaderboard
+	if (!leaderboard.openFromFile("Sound/Leaderboard music.ogg"))
+	{
+		std::cout << "ERROR::GAME::Could not load background music" << "\n";
+	}
+	leaderboard.setVolume(90.0f);
+	leaderboard.setLoop(true);
+
+	//Tutorial
+	if (!tutorial.openFromFile("Sound/Tutorial music.ogg"))
+	{
+		std::cout << "ERROR::GAME::Could not load background music" << "\n";
+	}
+	//tutorial.setVolume(50.0f);
+	tutorial.setLoop(true);
+
+	//Credit
+	if (!credit.openFromFile("Sound/Credit music.ogg"))
+	{
+		std::cout << "ERROR::GAME::Could not load background music" << "\n";
+	}
+	credit.setVolume(20.0f);
+	credit.setLoop(true);
+
+	//Soundtrack
+	if (!soundtrack.openFromFile("Sound/Soundtrack music.ogg"))
+	{
+		std::cout << "ERROR::GAME::Could not load background music" << "\n";
+	}
+	//soundtrack.setVolume(20.0f);
+	soundtrack.setLoop(true);
+
+	/////////////////////////////////////// Sound Effect ////////////////////////////////////////////
+
+	if (!SB_choose.loadFromFile("Sound/SE_choose.wav"))
+	{
+		std::cout << "ERROR::GAME::Could not load Sound Effect" << "\n";
+	}
+	choose.setBuffer(SB_choose);
+
+	if (!SB_start.loadFromFile("Sound/SE_choose.wav"))
+	{
+		std::cout << "ERROR::GAME::Could not load Sound Effect" << "\n";
+	}
+	start.setBuffer(SB_choose);
+
+	if (!SB_pause.loadFromFile("Sound/SE_choose.wav"))
+	{
+		std::cout << "ERROR::GAME::Could not load Sound Effect" << "\n";
+	}
+	pause.setBuffer(SB_choose);
+
+	if (!SB_shoot.loadFromFile("Sound/SE_choose.wav"))
+	{
+		std::cout << "ERROR::GAME::Could not load Sound Effect" << "\n";
+	}
+	shoot.setBuffer(SB_choose);
+
+	if (!SB_shoot2.loadFromFile("Sound/SE_choose.wav"))
+	{
+		std::cout << "ERROR::GAME::Could not load Sound Effect" << "\n";
+	}
+	shoot2.setBuffer(SB_choose);
+	
+	if (!SB_SP.loadFromFile("Sound/SE_choose.wav"))
+	{
+		std::cout << "ERROR::GAME::Could not load Sound Effect" << "\n";
+	}
+	SP.setBuffer(SB_choose);
+
+	if (!SB_SPAfter.loadFromFile("Sound/SE_choose.wav"))
+	{
+		std::cout << "ERROR::GAME::Could not load Sound Effect" << "\n";
+	}
+	SPAfter.setBuffer(SB_choose);
+	
+	if (!SB_dead.loadFromFile("Sound/SE_choose.wav"))
+	{
+		std::cout << "ERROR::GAME::Could not load Sound Effect" << "\n";
+	}
+	dead.setBuffer(SB_choose);
+
+	if (!SB_boom.loadFromFile("Sound/SE_choose.wav"))
+	{
+		std::cout << "ERROR::GAME::Could not load Sound Effect" << "\n";
+	}
+	boom.setBuffer(SB_choose);
+
 }
 void Game::initSystems()
 {
@@ -140,6 +262,7 @@ Game::Game()
 	this->initGUI();
 	this->initBGMenu();
 	this->initWorld();
+	this->initSound();
 	this->initSystems();
 	this->initPlayer();
 	this->initEnemies();
@@ -215,6 +338,7 @@ void Game::run()
 
 void Game::updatePollEvents()
 {
+	
 	sf::Event e;
 	while (this->window->pollEvent(e))
 	{
@@ -235,6 +359,11 @@ void Game::updatePollEvents()
 		{
 			if (e.Event::KeyPressed && e.Event::key.code == sf::Keyboard::Escape)
 			{
+				title.play();
+				leaderboard.stop();
+				tutorial.stop();
+				credit.stop();
+				soundtrack.stop();
 				this->namePage = 1.0f;
 				this->gameStart = false;
 			}
@@ -242,20 +371,32 @@ void Game::updatePollEvents()
 			{
 				if (this->choiceMenu == 1) //Start
 				{
+					title.stop();
+					soundtrack.play();
+					this->choiceMenu = 1;
 					this->gameStart = true;
 				}
 				if (this->choiceMenu == 2) //LeaderBoard
 				{
+					title.stop();
+					leaderboard.play();
+					this->choiceMenu = 2;
 					this->namePage = 2.0f;
 					this->gameStart = false;
 				}
 				if (this->choiceMenu == 3) //Tutorial
 				{
+					title.stop();
+					tutorial.play();
+					this->choiceMenu = 3;
 					this->namePage = 3.0f;
 					this->gameStart = false;
 				}
 				if (this->choiceMenu == 4) // Credit
 				{
+					title.stop();
+					credit.play();
+					this->choiceMenu = 4;
 					this->namePage = 4.0f;
 					this->gameStart = false;
 				}								
@@ -296,6 +437,8 @@ void Game::updatePollEvents()
 		}
 	}
 }
+
+
 
 void Game::updateInput()
 {
@@ -1370,6 +1513,14 @@ void Game::updateOption()
 
 	
 }
+void Game::updateMusic()
+{
+	if (this->namePage == 2.0f)
+	{
+		title.play();
+		title.setLoop(true);
+	}
+}
 
 void Game::update()
 {
@@ -1397,6 +1548,10 @@ void Game::update()
 
 		this->updateGUI();
 	}
+	/*else
+	{
+		this->updateMusic();
+	}*/
 	
 
 }
@@ -1448,11 +1603,11 @@ void Game::render()
 		}
 		if (this->namePage == 2)
 		{
-			this->window->draw(this->worldBackground);
+			this->window->draw(this->backgroundLeaderboard);
 		}
 		if (this->namePage == 3)
 		{
-			this->window->draw(this->worldBackground);
+			this->window->draw(this->backgroundTutorial);
 		}
 		if (this->namePage == 4)
 		{
@@ -1464,7 +1619,7 @@ void Game::render()
 	{
 		//Draw world
 		this->renderWorld();
-		//Game Over screen
+		
 		
 		//Draw all the stuffs
 		this->player->render(*this->window);
@@ -1539,6 +1694,8 @@ void Game::render()
 		{
 			this->window->draw(framePower);
 		}
+
+		//Game Over screen
 		if (this->player->getHp() <= 0)
 		{
 			this->player->alreadyDead(true, posX, posY);

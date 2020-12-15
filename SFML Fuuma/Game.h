@@ -34,14 +34,50 @@ private:
 	//World
 	sf::Texture worldBackgroundTex;
 	sf::Texture backgroundMainMenuTex;
-	sf::Texture ItemBarTex;
-	sf::Texture choice_ShipTex;
+	sf::Texture backgroundLeaderboardTex;
+	sf::Texture backgroundTutorialTex;
+	sf::Texture backgroundCreditTex;
 	sf::RectangleShape worldBackground;
 	sf::RectangleShape worldBackground2;
 	sf::RectangleShape backgroundMainMenu;
+	sf::RectangleShape backgroundLeaderboard;
+	sf::RectangleShape backgroundTutorial;
+	sf::RectangleShape backgroundCredit;
+
+	sf::Texture ItemBarTex;
+	sf::Texture choice_ShipTex;
 	sf::RectangleShape framePower;
 	sf::Sprite ItemBar;
 	sf::Sprite choice_Ship;
+
+	//Music
+	sf::Music title;
+	sf::Music tutorial;
+	sf::Music leaderboard;
+	sf::Music credit;
+	sf::Music soundtrack;
+
+	//Sound Effect
+	sf::SoundBuffer SB_choose;
+	sf::SoundBuffer SB_start;
+	sf::SoundBuffer SB_pause;
+	sf::SoundBuffer SB_shoot;
+	sf::SoundBuffer SB_shoot2;
+	sf::SoundBuffer SB_SP;
+	sf::SoundBuffer SB_SPAfter;
+	sf::SoundBuffer SB_dead;
+	sf::SoundBuffer SB_boom;
+
+	sf::Sound choose;
+	sf::Sound start;
+	sf::Sound pause;
+	sf::Sound shoot;
+	sf::Sound shoot2;
+	sf::Sound SP;
+	sf::Sound SPAfter;
+	sf::Sound dead;
+	sf::Sound boom;
+
 
 	//Systems
 	bool gameStart = false;
@@ -55,7 +91,8 @@ private:
 	int Bullet_Type;
 	int LifeForce_count;
 	int framePower_count;
-	
+	int selectMusic;
+
 	float MovementSpeed;
 	float posX;
 	float posY;
@@ -100,6 +137,7 @@ private:
 	void initGUI();
 	void initBGMenu();
 	void initWorld();
+	void initSound();
 	void initSystems();
 	void initPlayer();
 	void initEnemies();
@@ -121,6 +159,7 @@ public:
 	void updateCombat();
 	void updateItem();
 	void updateOption();
+	void updateMusic();
 	void update();
 	void renderMenu();
 	void renderGUI();
