@@ -67,6 +67,14 @@ private:
 	sf::SoundBuffer SB_SPAfter;
 	sf::SoundBuffer SB_dead;
 	sf::SoundBuffer SB_boom;
+	sf::SoundBuffer SB_takedamage;
+
+	sf::SoundBuffer SB_speedup;
+	sf::SoundBuffer SB_missile;
+	sf::SoundBuffer SB_double;
+	sf::SoundBuffer SB_laser;
+	sf::SoundBuffer SB_multiple;
+	sf::SoundBuffer SB_shield;
 
 	sf::Sound choose;
 	sf::Sound start;
@@ -77,6 +85,14 @@ private:
 	sf::Sound SPAfter;
 	sf::Sound dead;
 	sf::Sound boom;
+	sf::Sound takedamage;
+
+	sf::Sound speedup;
+	sf::Sound missile;
+	sf::Sound Double;
+	sf::Sound laser;
+	sf::Sound multiple;
+	sf::Sound shield;
 
 
 	//Systems

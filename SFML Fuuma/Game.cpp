@@ -99,11 +99,6 @@ void Game::initBGMenu()
 	this->backgroundTutorial.setTexture(&backgroundTutorialTex);
 	this->backgroundTutorial.setSize(sf::Vector2f(1600.0f, 900.0f));
 
-
-
-
-
-
 	if (!this->choice_ShipTex.loadFromFile("Player/Vic Viper.png"))
 	{
 		std::cout << "Error::Could not load texture player file." << "\n";
@@ -179,54 +174,105 @@ void Game::initSound()
 		std::cout << "ERROR::GAME::Could not load Sound Effect" << "\n";
 	}
 	choose.setBuffer(SB_choose);
+	this->choose.setVolume(50.0f);
 
-	if (!SB_start.loadFromFile("Sound/SE_choose.wav"))
+	if (!SB_start.loadFromFile("Sound/SE_start.wav"))
 	{
 		std::cout << "ERROR::GAME::Could not load Sound Effect" << "\n";
 	}
-	start.setBuffer(SB_choose);
+	start.setBuffer(SB_start);
+	this->start.setVolume(50.0f);
 
-	if (!SB_pause.loadFromFile("Sound/SE_choose.wav"))
+	if (!SB_pause.loadFromFile("Sound/SE_pause.wav"))
 	{
 		std::cout << "ERROR::GAME::Could not load Sound Effect" << "\n";
 	}
-	pause.setBuffer(SB_choose);
+	pause.setBuffer(SB_pause);
+	this->pause.setVolume(50.0f);
 
-	if (!SB_shoot.loadFromFile("Sound/SE_choose.wav"))
+	if (!SB_shoot.loadFromFile("Sound/SE_shoot.wav"))
 	{
 		std::cout << "ERROR::GAME::Could not load Sound Effect" << "\n";
 	}
-	shoot.setBuffer(SB_choose);
+	shoot.setBuffer(SB_shoot);
+	this->shoot.setVolume(50.0f);
 
-	if (!SB_shoot2.loadFromFile("Sound/SE_choose.wav"))
+	if (!SB_shoot2.loadFromFile("Sound/SE_shoot2.wav"))
 	{
 		std::cout << "ERROR::GAME::Could not load Sound Effect" << "\n";
 	}
-	shoot2.setBuffer(SB_choose);
-	
-	if (!SB_SP.loadFromFile("Sound/SE_choose.wav"))
-	{
-		std::cout << "ERROR::GAME::Could not load Sound Effect" << "\n";
-	}
-	SP.setBuffer(SB_choose);
+	shoot2.setBuffer(SB_shoot2);
+	this->shoot2.setVolume(50.0f);
 
-	if (!SB_SPAfter.loadFromFile("Sound/SE_choose.wav"))
+	if (!SB_SP.loadFromFile("Sound/SE_take SP.wav"))
 	{
 		std::cout << "ERROR::GAME::Could not load Sound Effect" << "\n";
 	}
-	SPAfter.setBuffer(SB_choose);
-	
-	if (!SB_dead.loadFromFile("Sound/SE_choose.wav"))
-	{
-		std::cout << "ERROR::GAME::Could not load Sound Effect" << "\n";
-	}
-	dead.setBuffer(SB_choose);
+	SP.setBuffer(SB_SP);
+	this->SP.setVolume(50.0f);
 
-	if (!SB_boom.loadFromFile("Sound/SE_choose.wav"))
+	if (!SB_SPAfter.loadFromFile("Sound/SE_SPAfter.wav"))
 	{
 		std::cout << "ERROR::GAME::Could not load Sound Effect" << "\n";
 	}
-	boom.setBuffer(SB_choose);
+	SPAfter.setBuffer(SB_SPAfter);
+	this->SPAfter.setVolume(50.0f);
+
+	if (!SB_dead.loadFromFile("Sound/SE_dead.wav"))
+	{
+		std::cout << "ERROR::GAME::Could not load Sound Effect" << "\n";
+	}
+	dead.setBuffer(SB_dead);
+	this->dead.setVolume(50.0f);
+
+	if (!SB_boom.loadFromFile("Sound/SE_boom.wav"))
+	{
+		std::cout << "ERROR::GAME::Could not load Sound Effect" << "\n";
+	}
+	boom.setBuffer(SB_boom);
+	this->boom.setVolume(50.0f);
+
+	if (!SB_takedamage.loadFromFile("Sound/SE_takedamage.wav"))
+	{
+		std::cout << "ERROR::GAME::Could not load Sound Effect" << "\n";
+	}
+	takedamage.setBuffer(SB_takedamage);
+	this->takedamage.setVolume(30.0f);
+	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	if (!SB_speedup.loadFromFile("Sound/SE_takedamage.wav"))
+	{
+		std::cout << "ERROR::GAME::Could not load Sound Effect" << "\n";
+	}
+	speedup.setBuffer(SB_speedup);
+	this->speedup.setVolume(30.0f);
+
+	if (!SB_missile.loadFromFile("Sound/SE_takedamage.wav"))
+	{
+		std::cout << "ERROR::GAME::Could not load Sound Effect" << "\n";
+	}
+	missile.setBuffer(SB_missile);
+	this->missile.setVolume(30.0f);
+
+	if (!SB_double.loadFromFile("Sound/SE_takedamage.wav"))
+	{
+		std::cout << "ERROR::GAME::Could not load Sound Effect" << "\n";
+	}
+	Double.setBuffer(SB_double);
+	this->Double.setVolume(30.0f);
+
+	if (!SB_laser.loadFromFile("Sound/SE_takedamage.wav"))
+	{
+		std::cout << "ERROR::GAME::Could not load Sound Effect" << "\n";
+	}
+	laser.setBuffer(SB_laser);
+	this->laser.setVolume(30.0f);
+
+	if (!SB_takedamage.loadFromFile("Sound/SE_takedamage.wav"))
+	{
+		std::cout << "ERROR::GAME::Could not load Sound Effect" << "\n";
+	}
+	takedamage.setBuffer(SB_takedamage);
+	this->takedamage.setVolume(30.0f);
 
 }
 void Game::initSystems()
@@ -369,8 +415,10 @@ void Game::updatePollEvents()
 			}
 			if (e.Event::KeyPressed && e.Event::key.code == sf::Keyboard::Enter)
 			{
+				
 				if (this->choiceMenu == 1) //Start
 				{
+					this->start.play();
 					title.stop();
 					soundtrack.play();
 					this->choiceMenu = 1;
@@ -403,7 +451,9 @@ void Game::updatePollEvents()
 			}
 			if (e.Event::KeyPressed && e.Event::key.code == sf::Keyboard::W)
 			{
+				
 				this->choiceMenu -= 0.5f;
+				this->choose.play();
 				if (this->choiceMenu == 0)
 				{
 					this->choiceMenu = 1;
@@ -411,7 +461,9 @@ void Game::updatePollEvents()
 			}
 			if (e.Event::KeyPressed && e.Event::key.code == sf::Keyboard::S)
 			{
+				
 				this->choiceMenu += 0.5f;
+				this->choose.play();
 				if (this->choiceMenu >=4)
 				{
 					this->choiceMenu = 4;
@@ -580,6 +632,7 @@ void Game::updateInput()
 		//Normal Bullet
 		if (Bullet_Type == 0)
 		{
+			this->shoot.play();
 			this->bullets.push_back(
 				new Bullet(this->textures["BULLET"], this->player->getPos().x + this->player->getBounds().width / 2.f, this->player->getPos().y, 1.f, 0.f, 5.f, 25, 0, false)
 			); //texture, pos_x, pos_y, dir_x, dir_y, movement_speed, Bullet_Pos, type, Missile_ON
@@ -587,7 +640,7 @@ void Game::updateInput()
 		{
 			if (this->option_Pos1 == true) // ขวา
 			{
-
+				this->shoot.play();
 				this->bullets.push_back(
 					new Bullet(this->textures["BULLET"], this->player->getPos().x + this->player->getBounds().width / 2.f + 70.0f, this->player->getPos().y - 10.0f, 1.f, 0.f, 5.f, 25, 0, false)
 				); //texture, pos_x, pos_y, dir_x, dir_y, movement_speed, Bullet_Pos, type, Missile_ON
@@ -595,7 +648,7 @@ void Game::updateInput()
 			}
 			if (this->option_Pos2 == true) //บน
 			{
-
+				this->shoot.play();
 				this->bullets.push_back(
 					new Bullet(this->textures["BULLET"], this->player->getPos().x + this->player->getBounds().width / 2.f - 50.0f, this->player->getPos().y - 90.0f, 1.f, 0.f, 5.f, 25, 0, false)
 				); //texture, pos_x, pos_y, dir_x, dir_y, movement_speed, Bullet_Pos, type, Missile_ON
@@ -603,7 +656,7 @@ void Game::updateInput()
 			}
 			if (this->option_Pos3 == true) //ซ้าย
 			{
-
+				this->shoot.play();
 				this->bullets.push_back(
 					new Bullet(this->textures["BULLET"], this->player->getPos().x + this->player->getBounds().width / 2.f - 180.0f, this->player->getPos().y - 10.0f, 1.f, 0.f, 5.f, 25, 0, false)
 				); //texture, pos_x, pos_y, dir_x, dir_y, movement_speed, Bullet_Pos, type, Missile_ON
@@ -611,7 +664,7 @@ void Game::updateInput()
 			}
 			if (this->option_Pos4 == true) //ล่าง
 			{
-
+				this->shoot.play();
 				this->bullets.push_back(
 					new Bullet(this->textures["BULLET"], this->player->getPos().x + this->player->getBounds().width / 2.f - 50.0f, this->player->getPos().y + 70.0f, 1.f, 0.f, 5.f, 25, 0, false)
 				); //texture, pos_x, pos_y, dir_x, dir_y, movement_speed, Bullet_Pos, type, Missile_ON
@@ -619,24 +672,28 @@ void Game::updateInput()
 			}
 			if (this->option_Pos5 == true) // ขวาบน
 			{
+				this->shoot.play();
 				this->bullets.push_back(
 					new Bullet(this->textures["BULLET"], this->player->getPos().x + this->player->getBounds().width / 2.f + 70.0f, this->player->getPos().y - 70.0f, 1.f, 0.f, 5.f, 25, 0, false)
 				); //texture, pos_x, pos_y, dir_x, dir_y, movement_speed, Bullet_Pos, type, Missile_ON
 			}
 			if (this->option_Pos6 == true) // :ซ้ายบน
 			{
+				this->shoot.play();
 				this->bullets.push_back(
 					new Bullet(this->textures["BULLET"], this->player->getPos().x + this->player->getBounds().width / 2.f - 150.0f, this->player->getPos().y - 70.0f, 1.f, 0.f, 5.f, 25, 0, false)
 				); //texture, pos_x, pos_y, dir_x, dir_y, movement_speed, Bullet_Pos, type, Missile_ON
 			}
 			if (this->option_Pos7 == true) // :ซ้ายล่าง
 			{
+				this->shoot.play();
 				this->bullets.push_back(
 					new Bullet(this->textures["BULLET"], this->player->getPos().x + this->player->getBounds().width / 2.f - 150.0f, this->player->getPos().y + 50.0f, 1.f, 0.f, 5.f, 25, 0, false)
 				); //texture, pos_x, pos_y, dir_x, dir_y, movement_speed, Bullet_Pos, type, Missile_ON
 			}
 			if (this->option_Pos8 == true) // :ขวาล่าง
 			{
+				this->shoot.play();
 				this->bullets.push_back(
 					new Bullet(this->textures["BULLET"], this->player->getPos().x + this->player->getBounds().width / 2.f + 70.0f, this->player->getPos().y + 50.0f, 1.f, 0.f, 5.f, 25, 0, false)
 				); //texture, pos_x, pos_y, dir_x, dir_y, movement_speed, Bullet_Pos, type, Missile_ON
@@ -650,6 +707,7 @@ void Game::updateInput()
 		{
 			if (checkDouble_On == true)
 			{
+				this->shoot.play();
 				this->bullets.push_back(
 					new Bullet(this->textures["BULLET"], this->player->getPos().x + this->player->getBounds().width / 2.f, this->player->getPos().y, 1.f, 0.f, 5.f, 25, 0, false)
 				); //texture, pos_x, pos_y, dir_x, dir_y, movement_speed, Bullet_Pos, type, Missile_ON
@@ -725,6 +783,7 @@ void Game::updateInput()
 			}
 			else
 			{
+				this->shoot.play();
 				this->bullets.push_back(
 					new Bullet(this->textures["BULLET"], this->player->getPos().x + this->player->getBounds().width / 2.f, this->player->getPos().y, 1.f, 0.f, 5.f, 25, 0, false)
 				); //texture, pos_x, pos_y, dir_x, dir_y, movement_speed, Bullet_Pos, type, Missile_ON
@@ -801,6 +860,7 @@ void Game::updateInput()
 		{
 			if (checkMissile_On == true)
 			{
+				this->shoot.play();
 				this->bullets.push_back(
 					new Bullet(this->textures["BULLET"], this->player->getPos().x + this->player->getBounds().width / 2.f, this->player->getPos().y, 1.f, 0.f, 5.f, 25, 0, false)
 				); //texture, pos_x, pos_y, dir_x, dir_y, movement_speed, Bullet_Pos, type, Missile_ON
@@ -876,6 +936,7 @@ void Game::updateInput()
 			}
 			else 
 			{
+				this->shoot.play();
 				this->bullets.push_back(
 					new Bullet(this->textures["BULLET"], this->player->getPos().x + this->player->getBounds().width / 2.f, this->player->getPos().y, 1.f, 0.f, 5.f, 25, 0, false)
 				); //texture, pos_x, pos_y, dir_x, dir_y, movement_speed, Bullet_Pos, type, Missile_ON
@@ -948,6 +1009,7 @@ void Game::updateInput()
 		//Ripple Bullet
 		else if (Bullet_Type == 3)
 		{
+			this->shoot2.play();
 			this->bullets.push_back(
 				new Bullet(this->textures2["BULLET"], this->player->getPos().x + this->player->getBounds().width / 2.f, this->player->getPos().y, 1.f, 0.f, 5.f, -20, 0, false)
 			); //texture, pos_x, pos_y, dir_x, dir_y, movement_speed, Bullet_Pos, type, Missile_ON
@@ -1227,6 +1289,7 @@ void Game::updateCombat()
 		{
 			if (this->enemies[i]->getBounds().intersects(this->bullets[k]->getBounds()))
 			{
+				this->takedamage.play();
 				this->points += this->enemies[i]->getPoints() * this->multiScore;
 				delete this->enemies[i];
 				this->enemies.erase(this->enemies.begin() + i);
@@ -1245,6 +1308,7 @@ void Game::updateCombat()
 		{
 			if (this->enemies[i]->getBounds().intersects(this->bullets2[k]->getBounds3()))
 			{
+				this->takedamage.play();
 				this->points += this->enemies[i]->getPoints() * this->multiScore;
 				delete this->enemies[i];
 				this->enemies.erase(this->enemies.begin() + i);
@@ -1264,6 +1328,7 @@ void Game::updateCombat()
 		{
 			if (this->enemies[i]->getBounds().intersects(this->bullets3[k]->getBounds2()))
 			{
+				this->takedamage.play();
 				this->points += this->enemies[i]->getPoints() * this->multiScore;
 				delete this->enemies[i];
 				this->enemies.erase(this->enemies.begin() + i);
@@ -1282,6 +1347,7 @@ void Game::updateCombat()
 		{
 			if (this->enemies_01S[i]->getBounds_01S().intersects(this->bullets[k]->getBounds()))
 			{
+				this->takedamage.play();
 				this->points += this->enemies_01S[i]->getPoints() * this->multiScore;
 
 				delete this->enemies_01S[i];
@@ -1304,6 +1370,7 @@ void Game::updateCombat()
 		{
 			if (this->enemies_01S[i]->getBounds_01S().intersects(this->bullets2[k]->getBounds3()))
 			{
+				this->takedamage.play();
 				this->points += this->enemies_01S[i]->getPoints() * this->multiScore;
 
 				delete this->enemies_01S[i];
@@ -1327,6 +1394,7 @@ void Game::updateCombat()
 		{
 			if (this->enemies_01S[i]->getBounds_01S().intersects(this->bullets3[k]->getBounds2()))
 			{
+				this->takedamage.play();
 				this->points += this->enemies_01S[i]->getPoints() * this->multiScore;
 
 				delete this->enemies_01S[i];
@@ -1368,6 +1436,7 @@ void Game::updateItem()
 			{
 				if (getPoint == true)
 				{
+					this->SP.play();
 					for (int i = 0; i < 1; i++)
 					{
 						this->SP_Points += this->Item_SP[i]->getSP_Points();
@@ -1431,6 +1500,7 @@ void Game::updateOption()
 		
 		if (SP_Points == 1) // speed up
 		{
+			this->SPAfter.play();
 			if (checkSpeed == true)
 			{
 				//this->player->openLifeForce(true, this->player->getPos().x + this->player->getBounds().width / 2.f, this->player->getPos().y);
@@ -1449,6 +1519,7 @@ void Game::updateOption()
 		}
 		else if (SP_Points == 2) // missile
 		{
+			this->SPAfter.play();
 			Bullet_Type = 1;
 			this->checkMissile_On = true;
 			SP_Points = 0;
@@ -1461,6 +1532,7 @@ void Game::updateOption()
 		}
 		else if (SP_Points == 3) //Double
 		{
+			this->SPAfter.play();
 			Bullet_Type = 2;
 			this->checkDouble_On = true;
 			SP_Points = 0;
@@ -1473,6 +1545,7 @@ void Game::updateOption()
 		}
 		else if (SP_Points == 4) //Laser
 		{
+			this->SPAfter.play();
 			Bullet_Type = 3;
 			this->checkMissile_On = false;
 			this->checkDouble_On = false;
@@ -1486,6 +1559,7 @@ void Game::updateOption()
 		}
 		else if (SP_Points == 5) // Option
 		{
+			this->SPAfter.play();
 			this->player->openOption_1(true, this->player->getPos().x + this->player->getBounds().width / 2.f - 130.0f, this->player->getPos().y + 80.0f);
 			this->checkOption_1 = true;
 			SP_Points = 0;
@@ -1498,6 +1572,7 @@ void Game::updateOption()
 		}
 		else if (SP_Points == 6) //LifeForce
 		{
+			this->SPAfter.play();
 			this->player->openLifeForce(true, this->player->getPos().x + this->player->getBounds().width / 2.f, this->player->getPos().y);
 			checkLifeForce_On = true;
 			this->LifeForce_count = 5.0f;
