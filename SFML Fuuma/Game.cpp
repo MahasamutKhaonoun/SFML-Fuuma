@@ -239,40 +239,47 @@ void Game::initSound()
 	takedamage.setBuffer(SB_takedamage);
 	this->takedamage.setVolume(30.0f);
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	if (!SB_speedup.loadFromFile("Sound/SE_takedamage.wav"))
+	if (!SB_speedup.loadFromFile("Sound/GRADIUS SPEED UP.wav"))
 	{
 		std::cout << "ERROR::GAME::Could not load Sound Effect" << "\n";
 	}
 	speedup.setBuffer(SB_speedup);
 	this->speedup.setVolume(30.0f);
 
-	if (!SB_missile.loadFromFile("Sound/SE_takedamage.wav"))
+	if (!SB_missile.loadFromFile("Sound/GRADIUS MISSILE.wav"))
 	{
 		std::cout << "ERROR::GAME::Could not load Sound Effect" << "\n";
 	}
 	missile.setBuffer(SB_missile);
 	this->missile.setVolume(30.0f);
 
-	if (!SB_double.loadFromFile("Sound/SE_takedamage.wav"))
+	if (!SB_double.loadFromFile("Sound/GRADIUS DOUBLE.wav"))
 	{
 		std::cout << "ERROR::GAME::Could not load Sound Effect" << "\n";
 	}
 	Double.setBuffer(SB_double);
 	this->Double.setVolume(30.0f);
 
-	if (!SB_laser.loadFromFile("Sound/SE_takedamage.wav"))
+	if (!SB_laser.loadFromFile("Sound/GRADIUS LASER.wav"))
 	{
 		std::cout << "ERROR::GAME::Could not load Sound Effect" << "\n";
 	}
 	laser.setBuffer(SB_laser);
 	this->laser.setVolume(30.0f);
 
-	if (!SB_takedamage.loadFromFile("Sound/SE_takedamage.wav"))
+	if (!SB_multiple.loadFromFile("Sound/GRADIUS MULTIPLE.wav"))
 	{
 		std::cout << "ERROR::GAME::Could not load Sound Effect" << "\n";
 	}
-	takedamage.setBuffer(SB_takedamage);
-	this->takedamage.setVolume(30.0f);
+	multiple.setBuffer(SB_multiple);
+	this->multiple.setVolume(30.0f);
+
+	if (!SB_shield.loadFromFile("Sound/GRADIUS SHIELD.wav"))
+	{
+		std::cout << "ERROR::GAME::Could not load Sound Effect" << "\n";
+	}
+	shield.setBuffer(SB_shield);
+	this->shield.setVolume(30.0f);
 
 }
 void Game::initSystems()
@@ -1213,8 +1220,10 @@ void Game::updateEnemies()
 		//Enemy player collision  
 		else if (enemy->getBounds().intersects(this->player->getBounds()))
 		{
+			
 			if (checkLifeForce_On == false)
 			{
+				this->boom.play();
 				this->player->loseHp(this->enemies.at(counter)->getDamage());
 				delete this->enemies.at(counter);
 				this->enemies.erase(this->enemies.begin() + counter);
@@ -1258,6 +1267,7 @@ void Game::updateEnemies()
 		{
 			if (checkLifeForce_On == false)
 			{
+				this->boom.play();
 				this->player->loseHp(this->enemies_01S.at(counter_01S)->getDamage());
 				delete this->enemies_01S.at(counter_01S);
 				this->enemies_01S.erase(this->enemies_01S.begin() + counter_01S);
@@ -1501,6 +1511,7 @@ void Game::updateOption()
 		if (SP_Points == 1) // speed up
 		{
 			this->SPAfter.play();
+			this->speedup.play();
 			if (checkSpeed == true)
 			{
 				//this->player->openLifeForce(true, this->player->getPos().x + this->player->getBounds().width / 2.f, this->player->getPos().y);
@@ -1520,6 +1531,7 @@ void Game::updateOption()
 		else if (SP_Points == 2) // missile
 		{
 			this->SPAfter.play();
+			this->missile.play();
 			Bullet_Type = 1;
 			this->checkMissile_On = true;
 			SP_Points = 0;
@@ -1533,6 +1545,7 @@ void Game::updateOption()
 		else if (SP_Points == 3) //Double
 		{
 			this->SPAfter.play();
+			this->Double.play();
 			Bullet_Type = 2;
 			this->checkDouble_On = true;
 			SP_Points = 0;
@@ -1546,6 +1559,7 @@ void Game::updateOption()
 		else if (SP_Points == 4) //Laser
 		{
 			this->SPAfter.play();
+			this->laser.play();
 			Bullet_Type = 3;
 			this->checkMissile_On = false;
 			this->checkDouble_On = false;
@@ -1560,6 +1574,7 @@ void Game::updateOption()
 		else if (SP_Points == 5) // Option
 		{
 			this->SPAfter.play();
+			this->multiple.play();
 			this->player->openOption_1(true, this->player->getPos().x + this->player->getBounds().width / 2.f - 130.0f, this->player->getPos().y + 80.0f);
 			this->checkOption_1 = true;
 			SP_Points = 0;
@@ -1573,6 +1588,7 @@ void Game::updateOption()
 		else if (SP_Points == 6) //LifeForce
 		{
 			this->SPAfter.play();
+			this->shield.play();
 			this->player->openLifeForce(true, this->player->getPos().x + this->player->getBounds().width / 2.f, this->player->getPos().y);
 			checkLifeForce_On = true;
 			this->LifeForce_count = 5.0f;
@@ -1773,6 +1789,9 @@ void Game::render()
 		//Game Over screen
 		if (this->player->getHp() <= 0)
 		{
+			this->soundtrack.stop();
+			this->dead.play();
+
 			this->player->alreadyDead(true, posX, posY);
 			this->player->render(*this->window);
 			this->window->draw(this->gameOverText);
