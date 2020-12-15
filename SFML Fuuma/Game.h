@@ -130,6 +130,7 @@ private:
 	bool option_Pos8 = false;
 	bool drawFrame = true;
 	bool checkTimemultiSpawn = false;
+	bool canEnter = false;
 
 	//Player
 	Player* player;
@@ -138,6 +139,7 @@ private:
 	sf::RectangleShape playerHpBar;
 	sf::RectangleShape playerHpBarBack;
 	sf::RectangleShape ItemBarBack;
+	sf::RectangleShape topBar;
 
 	//Enemies
 	float spawnTimer;

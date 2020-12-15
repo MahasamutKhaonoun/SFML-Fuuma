@@ -51,6 +51,10 @@ void Game::initGUI()
 	this->ItemBarBack.setFillColor(sf::Color::Blue);
 	this->ItemBarBack.setPosition(sf::Vector2f(0.0f, 750.0f));
 
+	this->topBar.setSize(sf::Vector2f(1600.0f, 70.0f));
+	this->topBar.setFillColor(sf::Color::Black);
+	this->topBar.setPosition(sf::Vector2f(0.0f, 0.0f));
+
 	//SP Point Text
 	this->SP_Text.setPosition(50.0f,835.0f);
 	this->SP_Text.setFont(this->font);
@@ -98,6 +102,18 @@ void Game::initBGMenu()
 	}
 	this->backgroundTutorial.setTexture(&backgroundTutorialTex);
 	this->backgroundTutorial.setSize(sf::Vector2f(1600.0f, 900.0f));
+	
+	//Tutorial
+	if (!this->backgroundCreditTex.loadFromFile("Screen/Credit.png"))
+	{
+		std::cout << "ERROR::GAME::Could not load background texture" << "\n";
+	}
+	this->backgroundCredit.setTexture(&backgroundCreditTex);
+	this->backgroundCredit.setSize(sf::Vector2f(1600.0f, 900.0f));
+
+
+	
+
 
 	if (!this->choice_ShipTex.loadFromFile("Player/Vic Viper.png"))
 	{
@@ -291,6 +307,7 @@ void Game::initSystems()
 	this->LifeForce_count = 5;
 	this->choiceMenu = 1.0f;
 	this->framePower_count = 0;
+	this->canEnter = false;
 	
 }
 void Game::initPlayer()
@@ -308,6 +325,19 @@ void Game::initEnemies()
 }
 void Game::clearall()
 {
+	this->points = 0.0f;
+	this->choiceMenu = 1.0f;
+	this->SP_Points = 0;
+	this->player->alreadyDead(false, posX, posY);
+	this->player->setHp(100);
+	this->Bullet_Type = 0;
+	this->MovementSpeed = 3.f;
+	this->initPlayer();
+	this->checkMissile_On = false;
+	this->checkDouble_On = false;
+	this->checkLifeForce_On = false;
+	this->checkOption_1 = false;
+	this->player->openOption_1(false, this->player->getPos().x + this->player->getBounds().width / 2.f - 130.0f, this->player->getPos().y + 80.0f);
 	//delete enemies
 	for (auto* en : this->enemies)
 	{
@@ -427,96 +457,80 @@ void Game::updatePollEvents()
 		{
 			this->window->close();
 		}
-		if (this->player->getHp() <= 0)
+		if (canEnter == false)
 		{
-			if (sf::Keyboard::isKeyPressed(sf::Keyboard::F1))
+			if (this->gameStart == false)
 			{
-				this->gameStart = false;
-				this->clearall();
-				this->points = 0.0f;
-				this->choiceMenu = 1.0f;
-				this->SP_Points = 0;
-				this->player->alreadyDead(false, posX, posY);
-				this->player->setHp(100);
-				this->Bullet_Type = 0;
-				this->checkMissile_On = false;
-				this->checkDouble_On = false;
-				this->checkLifeForce_On = false;
-				this->checkOption_1 = false;
-				title.play();
-			}
-		}
-		if (this->gameStart == false)
-		{
-			if (e.Event::KeyPressed && e.Event::key.code == sf::Keyboard::Escape)
-			{
-				title.play();
-				leaderboard.stop();
-				tutorial.stop();
-				credit.stop();
-				soundtrack.stop();
-				this->namePage = 1.0f;
-				this->gameStart = false;
-			}
-			if (e.Event::KeyPressed && e.Event::key.code == sf::Keyboard::Enter)
-			{
-				
-				if (this->choiceMenu == 1) //Start
+				if (e.Event::KeyPressed && e.Event::key.code == sf::Keyboard::Escape)
 				{
-					
-					this->spawnTimer = 0.0f;
-					this->spawnTimer_01S = 0.0f;
-					this->multiSpawn = 0.0f;
-					this->multiScore = 1.0f;
-					this->start.play();
-					title.stop();
-					soundtrack.play();
-					this->choiceMenu = 1;
-					this->gameStart = true;
-				}
-				if (this->choiceMenu == 2) //LeaderBoard
-				{
-					title.stop();
-					leaderboard.play();
-					this->choiceMenu = 2;
-					this->namePage = 2.0f;
+					title.play();
+					leaderboard.stop();
+					tutorial.stop();
+					credit.stop();
+					soundtrack.stop();
+					this->namePage = 1.0f;
 					this->gameStart = false;
 				}
-				if (this->choiceMenu == 3) //Tutorial
+				if (e.Event::KeyPressed && e.Event::key.code == sf::Keyboard::Enter)
 				{
-					title.stop();
-					tutorial.play();
-					this->choiceMenu = 3;
-					this->namePage = 3.0f;
-					this->gameStart = false;
+
+					if (this->choiceMenu == 1) //Start
+					{
+
+						this->spawnTimer = 0.0f;
+						this->spawnTimer_01S = 0.0f;
+						this->multiSpawn = 0.0f;
+						this->multiScore = 1.0f;
+						this->start.play();
+						title.stop();
+						soundtrack.play();
+						this->choiceMenu = 1;
+						this->gameStart = true;
+					}
+					if (this->choiceMenu == 2) //LeaderBoard
+					{
+						title.stop();
+						leaderboard.play();
+						this->choiceMenu = 2;
+						this->namePage = 2.0f;
+						this->gameStart = false;
+					}
+					if (this->choiceMenu == 3) //Tutorial
+					{
+						title.stop();
+						tutorial.play();
+						this->choiceMenu = 3;
+						this->namePage = 3.0f;
+						this->gameStart = false;
+					}
+					if (this->choiceMenu == 4) // Credit
+					{
+						title.stop();
+						credit.play();
+						this->choiceMenu = 4;
+						this->namePage = 4.0f;
+						this->gameStart = false;
+					}
 				}
-				if (this->choiceMenu == 4) // Credit
+				if (e.Event::KeyPressed && e.Event::key.code == sf::Keyboard::W)
 				{
-					title.stop();
-					credit.play();
-					this->choiceMenu = 4;
-					this->namePage = 4.0f;
-					this->gameStart = false;
-				}								
-			}
-			if (e.Event::KeyPressed && e.Event::key.code == sf::Keyboard::W)
-			{
-				
-				this->choiceMenu -= 0.5f;
-				this->choose.play();
-				if (this->choiceMenu == 0)
-				{
-					this->choiceMenu = 1;
+
+					this->choiceMenu -= 0.5f;
+					this->choose.play();
+					if (this->choiceMenu == 0)
+					{
+						this->choiceMenu = 1;
+					}
 				}
-			}
-			if (e.Event::KeyPressed && e.Event::key.code == sf::Keyboard::S)
-			{
-				
-				this->choiceMenu += 0.5f;
-				this->choose.play();
-				if (this->choiceMenu >=4)
+				if (e.Event::KeyPressed && e.Event::key.code == sf::Keyboard::S)
 				{
-					this->choiceMenu = 4;
+
+					this->choiceMenu += 0.5f;
+					this->choose.play();
+					if (this->choiceMenu >= 4)
+					{
+						this->choiceMenu = 4;
+					}
 				}
 			}
 		}
@@ -536,6 +550,20 @@ void Game::updatePollEvents()
 		if (this->choiceMenu == 4)
 		{
 			this->choice_Ship.setPosition(320.0f, 750.0f);
+		}
+		if (this->player->getHp() <= 0)
+		{
+			if (this->canEnter == true)
+			{
+				if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
+				{
+					this->gameStart = false;
+					this->clearall();
+					title.play();
+					this->canEnter = false;
+				}
+			}
+
 		}
 	}
 }
@@ -674,9 +702,6 @@ void Game::updateInput()
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::M))
 	{
 		
-
-		
-
 	}
 		
 	
@@ -1179,9 +1204,9 @@ void Game::updateCollision()
 	}
 
 	//Bottom world collision
-	else if (this->player->getBounds().top + this->player->getBounds().height >= this->window->getSize().y)
+	else if (this->player->getBounds().top + this->player->getBounds().height >= this->window->getSize().y - 150.0f)
 	{
-		this->player->setPosition(this->player->getBounds().left, this->window->getSize().y - this->player->getBounds().height);
+		this->player->setPosition(this->player->getBounds().left, this->window->getSize().y - this->player->getBounds().height - 150.0f );
 		this->player->updateLifeForce(this->player->getBounds().left + 75.0f, this->window->getSize().y - this->player->getBounds().height);
 	}
 }
@@ -1707,6 +1732,7 @@ void Game::renderGUI()
 	this->window->draw(this->pointText);
 	this->window->draw(this->SP_Text);
 	this->window->draw(this->ItemBar);
+	this->window->draw(this->topBar);
 	
 }
 
@@ -1748,7 +1774,7 @@ void Game::render()
 		}
 		if (this->namePage == 4)
 		{
-			this->window->draw(this->worldBackground);
+			this->window->draw(this->backgroundCredit);
 		}
 		
 	}
@@ -1837,7 +1863,7 @@ void Game::render()
 		{
 			this->soundtrack.stop();
 			this->dead.play();
-
+			this->canEnter = true;
 			this->player->alreadyDead(true, posX, posY);
 			this->player->render(*this->window);
 			this->window->draw(this->gameOverText);
