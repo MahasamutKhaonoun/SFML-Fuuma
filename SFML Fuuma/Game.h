@@ -158,6 +158,8 @@ private:
 	void initPlayer();
 	void initEnemies();
 
+	void clearall();
+
 public:
 	Game();
 	virtual ~Game();

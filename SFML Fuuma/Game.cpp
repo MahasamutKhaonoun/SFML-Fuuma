@@ -306,6 +306,27 @@ void Game::initEnemies()
 	this->spawnTimerMax_01S = 50.0f;
 	this->spawnTimer_01S = this->spawnTimerMax_01S;
 }
+void Game::clearall()
+{
+	//delete enemies
+	for (auto* en : this->enemies)
+	{
+		delete en;
+	}
+	this->enemies.clear();
+
+	for (auto* en1 : this->enemies_01S)
+	{
+		delete en1;
+	}
+	this->enemies_01S.clear();
+
+	for (auto* iS : this->Item_SP)
+	{
+		delete iS;
+	}
+	this->Item_SP.clear();
+}
 //Con Des
 Game::Game()
 {
@@ -384,7 +405,6 @@ void Game::run()
 			this->render();
 		}
 		
-
 	}
 	
 }
@@ -407,7 +427,25 @@ void Game::updatePollEvents()
 		{
 			this->window->close();
 		}
-		
+		if (this->player->getHp() <= 0)
+		{
+			if (sf::Keyboard::isKeyPressed(sf::Keyboard::F1))
+			{
+				this->gameStart = false;
+				this->clearall();
+				this->points = 0.0f;
+				this->choiceMenu = 1.0f;
+				this->SP_Points = 0;
+				this->player->alreadyDead(false, posX, posY);
+				this->player->setHp(100);
+				this->Bullet_Type = 0;
+				this->checkMissile_On = false;
+				this->checkDouble_On = false;
+				this->checkLifeForce_On = false;
+				this->checkOption_1 = false;
+				title.play();
+			}
+		}
 		if (this->gameStart == false)
 		{
 			if (e.Event::KeyPressed && e.Event::key.code == sf::Keyboard::Escape)
@@ -425,6 +463,11 @@ void Game::updatePollEvents()
 				
 				if (this->choiceMenu == 1) //Start
 				{
+					
+					this->spawnTimer = 0.0f;
+					this->spawnTimer_01S = 0.0f;
+					this->multiSpawn = 0.0f;
+					this->multiScore = 1.0f;
 					this->start.play();
 					title.stop();
 					soundtrack.play();
@@ -631,6 +674,9 @@ void Game::updateInput()
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::M))
 	{
 		
+
+		
+
 	}
 		
 	
@@ -1795,6 +1841,7 @@ void Game::render()
 			this->player->alreadyDead(true, posX, posY);
 			this->player->render(*this->window);
 			this->window->draw(this->gameOverText);
+			
 		}
 
 		

@@ -117,6 +117,7 @@ void Player::setPosition(const float x, const float y)
 
 void Player::setHp(const int hp)
 {
+	this->sprite.setPosition(100.f, 360.f);
 	this->hp = hp;
 }
 
