@@ -35,7 +35,7 @@ void Game::initGUI()
 	this->gameOverText.setString("GAME OVER!");
 	this->gameOverText.setPosition(
 		this->window->getSize().x / 2 - this->gameOverText.getGlobalBounds().width / 2.0f, 
-		this->window->getSize().y / 2 - this->gameOverText.getGlobalBounds().height /2.0f);
+		200);
 
 	//Init player GUI
 	this->playerHpBar.setSize(sf::Vector2f(300.0f, 25.0f));
@@ -61,6 +61,24 @@ void Game::initGUI()
 	this->SP_Text.setCharacterSize(35);
 	this->SP_Text.setFillColor(sf::Color::White);
 	//this->SP_Text.setString("SP : ");
+
+	this->highScore.setPosition(900.0f, 300.0f);
+	this->highScore.setFont(this->font_Nikkyou);
+	this->highScore.setCharacterSize(35);
+	this->highScore.setFillColor(sf::Color::White);
+
+	this->nowScore.setPosition(300.0f, 700.0f);
+	this->nowScore.setFont(this->font_Nikkyou);
+	this->nowScore.setCharacterSize(35);
+	this->nowScore.setFillColor(sf::Color::White);
+
+	// player text
+	this->playerText.setPosition(sf::Vector2f(500.f, 400.f));
+	this->playerText.setFont(this->font_Nikkyou);
+	this->playerText.setCharacterSize(100);
+	this->playerText.setFillColor(sf::Color::Blue);
+	this->playerText.setString("");
+	this->playerText.setStyle(sf::Text::Bold);
 
 	//ItemBar
 	if (!this->ItemBarTex.loadFromFile("Item/ItemScreen.png"))
@@ -110,6 +128,13 @@ void Game::initBGMenu()
 	}
 	this->backgroundCredit.setTexture(&backgroundCreditTex);
 	this->backgroundCredit.setSize(sf::Vector2f(1600.0f, 900.0f));
+
+	if (!this->backgroundNameTex.loadFromFile("Screen/Name.png"))
+	{
+		std::cout << "ERROR::GAME::Could not load background texture" << "\n";
+	}
+	this->backgroundName.setTexture(&backgroundNameTex);
+	this->backgroundName.setSize(sf::Vector2f(1600.0f, 900.0f));
 
 
 	
@@ -308,6 +333,7 @@ void Game::initSystems()
 	this->choiceMenu = 1.0f;
 	this->framePower_count = 0;
 	this->canEnter = false;
+	this->canText = false;
 	
 }
 void Game::initPlayer()
@@ -356,6 +382,67 @@ void Game::clearall()
 		delete iS;
 	}
 	this->Item_SP.clear();
+}
+void Game::readFileScore()
+{
+	std::stringstream zz;
+	std::ifstream reader;
+	//char a;
+	int i;
+	reader.open("Score.txt", std::fstream::app);
+
+
+
+	if (reader.is_open())
+	{
+		for (i = 0; i < 5; i++)
+		{
+			//reader >> a;
+			//reader >> this->playerName >> this->points;
+			std::vector<std::string> temp;
+			temp.push_back("NULL");
+			temp.push_back("NULL");
+
+			reader >> temp[0] >> temp[1];
+			GaebKhaNaen.push_back(temp);
+			std::cout << "Read File Success!" << std::endl;
+			//std::cout << this->playerName << " " << this->points << std::endl;
+
+		}
+		for (int j = 0; j < 5; j++)
+		{
+			std::cout << this->GaebKhaNaen[j][0];
+			std::cout << this->GaebKhaNaen[j][1] << std::endl;
+		}
+		// test what player's score should display on game
+		zz << this->GaebKhaNaen[0][0] + "\t";
+		zz << this->GaebKhaNaen[0][1] << std::endl;
+
+		zz << this->GaebKhaNaen[1][0] + "\t";
+		zz << this->GaebKhaNaen[1][1] << std::endl;
+
+		zz << this->GaebKhaNaen[2][0] + "\t";
+		zz << this->GaebKhaNaen[2][1] << std::endl;
+
+		zz << this->GaebKhaNaen[3][0] + "\t";
+		zz << this->GaebKhaNaen[3][1] << std::endl;
+
+		zz << this->GaebKhaNaen[4][0] + "\t";
+		zz << this->GaebKhaNaen[4][1] << std::endl;
+
+
+
+
+		this->highScore.setString(zz.str());
+
+		//sc << this->playerName << " : " << this->points;
+
+	}
+	else
+	{
+		std::cout << "Cannot Read File!";
+	}
+	reader.close();
 }
 //Con Des
 Game::Game()
@@ -429,12 +516,34 @@ void Game::run()
 	while (this->window->isOpen())
 	{
 		this->updatePollEvents();
+
 		if (this->player->getHp() > 0)
 		{
 			this->update();
 			this->render();
 		}
-		
+		else
+		{
+			this->alreadyDead = true;
+			//this->update();
+			this->render();
+		}
+
+		/*if (this->player->getHp() <= 0)
+		{
+			
+			this->updateScoreOnetime = true;
+			if (this->updateScoreOnetime == true)
+			{
+				this->readFileScore();
+				this->updateAndSaveScore();
+				this->updateScoreOnetime = false;
+			}
+			
+			this->renderEnterName();
+		}*/
+
+			
 	}
 	
 }
@@ -469,12 +578,12 @@ void Game::updatePollEvents()
 			soundtrack.stop();
 			this->canEnter = false;
 		}
-		if (canEnter == false)
-		{
-			if (this->gameStart == false)
+	
+			if (this->gameStart == false && this->canEnter == false)
 			{
 				if (e.Event::KeyPressed && e.Event::key.code == sf::Keyboard::Escape)
 				{
+					
 					title.play();
 					leaderboard.stop();
 					tutorial.stop();
@@ -545,7 +654,6 @@ void Game::updatePollEvents()
 					}
 				}
 			}
-		}
 
 		if (this->choiceMenu == 1)
 		{
@@ -565,19 +673,63 @@ void Game::updatePollEvents()
 		}
 		if (this->player->getHp() <= 0)
 		{
-			if (this->canEnter == true)
+			this->canEnter = true;
+			this->canText = true;
+			if (this->canText == true)
 			{
-				if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
+			
+				if (e.type == sf::Event::TextEntered && e.text.unicode < 128)
 				{
-					this->gameStart = false;
-					this->clearall();
-					title.play();
-					this->canEnter = false;
+					std::cout << "" << e.key.code << std::endl;
+					switch (e.key.code)
+					{
+					case 8: // backspace delete name
+
+						if (this->playerName.size() == 0)
+						{
+							break;
+						}
+						this->playerName.pop_back();
+						this->playerText.setString(this->playerName);
+
+						break;
+
+					case 32: // press space button
+
+						if (this->playerName.size() > 0)
+						{
+							this->readFileScore();
+							this->updateAndSaveScore();
+							this->alreadyDead = false;
+							this->gameStart = false;
+							this->clearall();
+							title.play();
+							this->canEnter = false;
+							this->canText = false;
+							this->updateScoreOnetime = true;
+							title.stop();
+							leaderboard.play();
+							this->choiceMenu = 2;
+							this->namePage = 2.0f;
+						
+							this->gameStart = false;
+						}
+						break;
+
+					default:
+						if (this->playerName.size() > 8)
+						{
+							break;
+						}
+						this->playerName += e.text.unicode;
+						this->playerText.setString(this->playerName);
+					}
 				}
 			}
-
+			
 		}
 	}
+	
 }
 
 
@@ -1170,12 +1322,17 @@ void Game::updateInput()
 void Game::updateGUI()
 {
 	std::stringstream ss;
+
 	ss << "SCORE : " << this->points;
 	this->pointText.setString(ss.str());
 
 	std::stringstream ssPoint;
 	ssPoint << "SP : " << this->SP_Points;
 	this->SP_Text.setString(ssPoint.str());
+
+	std::stringstream sc;
+	sc << " Score : " << this->points;
+	this->nowScore.setString(sc.str());
 
 	//Update player GUI
 	float hpPercent = static_cast<float>(this->player->getHp()) / this->player->getHpMax();
@@ -1698,34 +1855,37 @@ void Game::updateMusic()
 
 void Game::update()
 {
-	if (this->gameStart == true)
+	if (this->alreadyDead == false)
 	{
-		this->updateInput();
+		if (this->gameStart == true)
+		{
+			this->updateInput();
 
-		this->player->update();
+			this->player->update();
 
-		this->updateCollision();
+			this->updateCollision();
 
-		this->updateBullets();
+			this->updateBullets();
 
-		this->updateEnemies();
+			this->updateEnemies();
 
-		this->updateCombat();
+			this->updateCombat();
 
-		this->updateItem();
+			this->updateItem();
 
-		this->updateOption();
+			this->updateOption();
 
-		this->renderGUI();
+			this->renderGUI();
 
-		this->updateWorld();
+			this->updateWorld();
 
-		this->updateGUI();
+			this->updateGUI();
+
+		}
 	}
-	/*else
-	{
-		this->updateMusic();
-	}*/
+
+	
+	
 	
 
 }
@@ -1769,123 +1929,198 @@ void Game::render()
 {
 	this->window->clear();
 
-	if (this->gameStart == false)
+	if (this->alreadyDead == false)
 	{
-		if (this->namePage == 1)
+		if (this->gameStart == false)
 		{
-			this->window->draw(this->backgroundMainMenu);
-			this->window->draw(this->choice_Ship);;
-		}
-		if (this->namePage == 2)
-		{
-			this->window->draw(this->backgroundLeaderboard);
-		}
-		if (this->namePage == 3)
-		{
-			this->window->draw(this->backgroundTutorial);
-		}
-		if (this->namePage == 4)
-		{
-			this->window->draw(this->backgroundCredit);
-		}
-		
-	}
-	else
-	{
-		//Draw world
-		this->renderWorld();
-		
-		
-		//Draw all the stuffs
-		this->player->render(*this->window);
-		for (auto* bullet : this->bullets)
-		{
-			bullet->render(this->window);
-		}
+			if (this->namePage == 1)
+			{
+				this->window->draw(this->backgroundMainMenu);
+				this->window->draw(this->choice_Ship);;
+			}
+			if (this->namePage == 2)
+			{
+				this->window->draw(this->backgroundLeaderboard);
+				this->window->draw(this->highScore);
+				this->window->draw(this->nowScore);
+			}
+			if (this->namePage == 3)
+			{
+				this->window->draw(this->backgroundTutorial);
+			}
+			if (this->namePage == 4)
+			{
+				this->window->draw(this->backgroundCredit);
+			}
 
-		for (auto* bullet2 : this->bullets2)
-		{
-			bullet2->render(this->window);
 		}
+		else
+		{
+			//Draw world
+			this->renderWorld();
 
-		for (auto* bullet3 : this->bullets3)
-		{
-			bullet3->render(this->window);
-		}
 
-		for (auto* enemy : this->enemies)
-		{
-			enemy->render(this->window);
-		}
-
-		for (auto* enemy_01S : this->enemies_01S)
-		{
-			enemy_01S->render(this->window);
-		}
-
-		for (auto* ItemSP : this->Item_SP)
-		{
-			ItemSP->render(this->window);
-		}
-
-		this->renderGUI();
-		
-		
-		if (framePower_count == 0)
-		{
-			this->drawFrame = false;
-		}
-		if (framePower_count == 1)
-		{
-			this->drawFrame = true;
-			this->framePower.setPosition(sf::Vector2f(290.0f, 830.0f)); // speed up
-		}
-		if (framePower_count == 2)
-		{
-			this->drawFrame = true;
-			this->framePower.setPosition(sf::Vector2f(490.0f, 830.0f)); // missile
-		}
-		if (framePower_count == 3)
-		{
-			this->drawFrame = true;
-			this->framePower.setPosition(sf::Vector2f(695.0f, 830.0f)); // Double
-		}
-		if (framePower_count == 4)
-		{
-			this->drawFrame = true;
-			this->framePower.setPosition(sf::Vector2f(900.0f, 830.0f)); // Laser
-		}
-		if (framePower_count == 5)
-		{
-			this->drawFrame = true;
-			this->framePower.setPosition(sf::Vector2f(1105.0f, 830.0f)); // Option
-		}
-		if (framePower_count == 6)
-		{
-			this->drawFrame = true;
-			this->framePower.setPosition(sf::Vector2f(1305.0f, 830.0f)); // ?
-		}
-		if (this->drawFrame == true)
-		{
-			this->window->draw(framePower);
-		}
-
-		//Game Over screen
-		if (this->player->getHp() <= 0)
-		{
-			this->soundtrack.stop();
-			this->dead.play();
-			this->canEnter = true;
-			this->player->alreadyDead(true, posX, posY);
+			//Draw all the stuffs
 			this->player->render(*this->window);
-			this->window->draw(this->gameOverText);
-			
+			for (auto* bullet : this->bullets)
+			{
+				bullet->render(this->window);
+			}
+
+			for (auto* bullet2 : this->bullets2)
+			{
+				bullet2->render(this->window);
+			}
+
+			for (auto* bullet3 : this->bullets3)
+			{
+				bullet3->render(this->window);
+			}
+
+			for (auto* enemy : this->enemies)
+			{
+				enemy->render(this->window);
+			}
+
+			for (auto* enemy_01S : this->enemies_01S)
+			{
+				enemy_01S->render(this->window);
+			}
+
+			for (auto* ItemSP : this->Item_SP)
+			{
+				ItemSP->render(this->window);
+			}
+
+			this->renderGUI();
+
+
+			if (framePower_count == 0)
+			{
+				this->drawFrame = false;
+			}
+			if (framePower_count == 1)
+			{
+				this->drawFrame = true;
+				this->framePower.setPosition(sf::Vector2f(290.0f, 830.0f)); // speed up
+			}
+			if (framePower_count == 2)
+			{
+				this->drawFrame = true;
+				this->framePower.setPosition(sf::Vector2f(490.0f, 830.0f)); // missile
+			}
+			if (framePower_count == 3)
+			{
+				this->drawFrame = true;
+				this->framePower.setPosition(sf::Vector2f(695.0f, 830.0f)); // Double
+			}
+			if (framePower_count == 4)
+			{
+				this->drawFrame = true;
+				this->framePower.setPosition(sf::Vector2f(900.0f, 830.0f)); // Laser
+			}
+			if (framePower_count == 5)
+			{
+				this->drawFrame = true;
+				this->framePower.setPosition(sf::Vector2f(1105.0f, 830.0f)); // Option
+			}
+			if (framePower_count == 6)
+			{
+				this->drawFrame = true;
+				this->framePower.setPosition(sf::Vector2f(1305.0f, 830.0f)); // ?
+			}
+			if (this->drawFrame == true)
+			{
+				this->window->draw(framePower);
+			}
+
+			//Game Over screen
+			if (this->player->getHp() <= 0)
+			{
+				
+				this->soundtrack.stop();
+				this->dead.play();
+				this->canEnter = true;
+				//this->player->alreadyDead(true, posX, posY);
+				this->player->render(*this->window);
+				//this->window->draw(this->gameOverText);
+
+			}
 		}
 
-		
+
+	}
+	if (this->alreadyDead == true)
+	{
+		this->window->draw(this->backgroundName);
+		this->window->draw(this->gameOverText);
+		this->window->draw(this->playerText);
+
+	}
+	this->window->display();
+}
+
+void Game::updateAndSaveScore()
+{
+	typedef struct NameWithScore {
+		std::string name;
+		int score;
+	} NameWithScore;
+
+	auto compareScores = [](NameWithScore p_1, NameWithScore p_2) {
+		return p_1.score > p_2.score;
+	};
+
+	std::vector<NameWithScore> namesWithScore;
+
+	NameWithScore currentPlayer;
+	currentPlayer.name = this->playerName;
+	currentPlayer.score = this->points;
+
+	namesWithScore.push_back(currentPlayer);
+
+	std::ifstream ifs("Score.txt");
+
+	if (ifs.is_open())
+	{
+
+		std::string playerName1 = "";
+		std::string playerScore = "";
+
+		while (ifs >> playerName1 >> playerScore)
+		{
+			//std::cout << "name0 ---> " << playerName1 << std::endl;
+			//std::cout << "score0 ---> " << playerScore << std::endl;
+			NameWithScore temp;
+			temp.name = playerName1;
+			temp.score = std::stoi(playerScore);
+			namesWithScore.push_back(temp);
+		}
+
+	}
+	ifs.close();
+
+	std::sort(namesWithScore.begin(), namesWithScore.end(), compareScores);
+
+	std::fstream ofs;
+
+	ofs.open("Score.txt", std::ios::out | std::ios::trunc);
+
+	for (auto nameWithScore : namesWithScore) {
+		//std::cout << "name ---> " << nameWithScore.name << std::endl;
+		//std::cout << "score ---> " << nameWithScore.score << std::endl;
+
+		ofs << nameWithScore.name + "\t" + std::to_string(nameWithScore.score) + "\n";
 	}
 
-	
+	ofs.close();
+}
 
+void Game::renderEnterName()
+{
+	this->window->clear();
+	this->window->draw(this->gameOverText);
+	this->window->draw(this->nowScore);
+	this->window->draw(this->playerText);
 	this->window->display();
 }

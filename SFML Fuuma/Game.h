@@ -1,19 +1,33 @@
 #pragma once
-
-#include<map>
+#include <cstdlib>
+#include <map>
 #include<string>
 #include<sstream>
 #include <vector>
+#include <utility>
 #include "Player.h"
 #include "Bullet.h"
 #include "Enemy.h"
 #include "Item.h"
+
+#include <algorithm>
+#include <fstream>
+
 
 class Game
 {
 private:
 	//Window
 	sf::RenderWindow* window;
+
+	std::string playerName = "";
+	sf::Text playerText;
+	bool canText = false;
+	bool updateScoreOnetime = true;
+	std::vector<std::vector<std::string>> GaebKhaNaen;
+	sf::Text KhaNaen[20][20];
+	sf::Text highScore;
+	sf::Text nowScore;
 
 	//Resources
 	std::map<std::string, sf::Texture*> textures;
@@ -30,6 +44,7 @@ private:
 	sf::Text pointText;
 	sf::Text gameOverText;
 	sf::Text SP_Text;
+	
 
 	//World
 	sf::Texture worldBackgroundTex;
@@ -37,12 +52,14 @@ private:
 	sf::Texture backgroundLeaderboardTex;
 	sf::Texture backgroundTutorialTex;
 	sf::Texture backgroundCreditTex;
+	sf::Texture backgroundNameTex;
 	sf::RectangleShape worldBackground;
 	sf::RectangleShape worldBackground2;
 	sf::RectangleShape backgroundMainMenu;
 	sf::RectangleShape backgroundLeaderboard;
 	sf::RectangleShape backgroundTutorial;
 	sf::RectangleShape backgroundCredit;
+	sf::RectangleShape backgroundName;
 
 	sf::Texture ItemBarTex;
 	sf::Texture choice_ShipTex;
@@ -131,6 +148,7 @@ private:
 	bool drawFrame = true;
 	bool checkTimemultiSpawn = false;
 	bool canEnter = false;
+	bool alreadyDead = false;
 
 	//Player
 	Player* player;
@@ -159,8 +177,8 @@ private:
 	void initSystems();
 	void initPlayer();
 	void initEnemies();
-
 	void clearall();
+	void readFileScore();
 
 public:
 	Game();
@@ -185,6 +203,9 @@ public:
 	void renderGUI();
 	void renderWorld();
 	void render();
+	void updateAndSaveScore();
+	void renderEnterName();
+
 
 };
 
