@@ -73,7 +73,7 @@ void Game::initGUI()
 	this->nowScore.setFillColor(sf::Color::White);
 
 	// player text
-	this->playerText.setPosition(sf::Vector2f(500.f, 400.f));
+	this->playerText.setPosition(sf::Vector2f(500.f, 500.f));
 	this->playerText.setFont(this->font_Nikkyou);
 	this->playerText.setCharacterSize(100);
 	this->playerText.setFillColor(sf::Color::Blue);
@@ -849,7 +849,7 @@ void Game::updateInput()
 	//Debug
 	/*if (sf::Keyboard::isKeyPressed(sf::Keyboard::P))
 		this->player->loseHp(200);*/
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::O))
+	/*if (sf::Keyboard::isKeyPressed(sf::Keyboard::O))
 		this->player->openLifeForce(true, this->player->getPos().x + this->player->getBounds().width / 2.f, this->player->getPos().y);
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Z))
 		this->SP_Points = 1;
@@ -866,7 +866,7 @@ void Game::updateInput()
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::M))
 	{
 		
-	}
+	}*/
 		
 	
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::J) && this->player->canAttack())
